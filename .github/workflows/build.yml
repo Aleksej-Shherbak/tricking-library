@@ -16,7 +16,7 @@ jobs:
         run: dotnet build 
         
       - name: List after build TrickingLibrary.sln
-        run: ls ./TrickingLibrary -R
+        run: ls -la
 
       - name: Chec npm cli
         run: npm --version
