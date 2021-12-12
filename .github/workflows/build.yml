@@ -5,7 +5,9 @@ on: push
 jobs:
   Build:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
+      - name Pull Code
+        uses: actions/checkout@v2
       - name: Get current path
         run: pwd
       - name: Get list of files
