@@ -8,7 +8,15 @@ jobs:
     steps:
       - name: Pull Code
         uses: actions/checkout@v2
+        
       - name: Check dotnet cli
         run: dotnet --version
+    
+      - name: Build server
+        run: dotnet build 
+        
+      - name: List after build TrickingLibrary.sln
+        run: ls ./ReickingLibrary -R
+
       - name: Chec npm cli
         run: npm --version
