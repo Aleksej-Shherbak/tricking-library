@@ -1,72 +1,106 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
+
       <div v-if="this.tricks">
         <p v-for="t in this.tricks">
           {{ t.name }}
         </p>
       </div>
 
-      <div>
-        <v-text-field labe="Trick Name" v-model="trickName"></v-text-field>
-        <v-btn @click="saveTrick">Save trick</v-btn>
-      </div>
 
-      <div>
-        {{ message }}
-      </div>
+      <v-stepper v-model="stepNumber">
+        <v-stepper-header>
+          <v-stepper-step :complete="stepNumber === 1" step="1">Upload video</v-stepper-step>
 
-      <v-btn @click="reset">Reset message</v-btn>
-      <v-btn @click="reset">Reset tricks</v-btn>
+          <v-divider></v-divider>
 
+          <v-stepper-step :complete="stepNumber === 2" step="2">Trick information</v-stepper-step>
+
+          <v-divider></v-divider>
+
+          <v-stepper-step :complete="stepNumber === 3" step="3">Confirmation</v-stepper-step>
+        </v-stepper-header>
+
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-card class="mb-12 pa-2">
+              <v-file-input accept="video/*" v-model="trickVideo" label="Add a trick video here"></v-file-input>
+            </v-card>
+            <div class="d-flex justify-space-between">
+              <div></div>
+              <v-btn color="primary" @click="stepNumber++" :disabled="!trickVideo">Continue >>></v-btn>
+            </div>
+          </v-stepper-content>
+
+          <v-stepper-content step="2">
+            <v-card class="mb-12 pa-2">
+              <v-text-field labe="Trick Name" v-model="trickName"></v-text-field>
+            </v-card>
+            <div class="d-flex justify-space-between">
+              <v-btn @click="stepNumber--"><<< Back</v-btn>
+              <v-btn color="primary" @click="preparePreview" :disabled="!trickName">Continue >>></v-btn>
+            </div>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <v-card class="mb-12 pa-2">
+              <p class="mb-2">{{ trickName }} </p>
+              <video width="100%" height="300" controls="controls" :src="previewVideoSrc"></video>
+            </v-card>
+            <div class="d-flex justify-space-between">
+              <v-btn @click="stepNumber--"><<< Back</v-btn>
+              <v-btn color="success" @click="saveTrick" class="ma-2 white--text">
+                <v-icon dark>mdi-cloud-upload</v-icon>&nbsp; Upload
+              </v-btn>
+            </div>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import {mapState, mapActions, mapMutations} from 'vuex';
 
 export default {
-
   computed: {
-    ...mapState({
-      message: state => state.message
-    }),
     ...mapState('tricks', {
       tricks: state => state.tricks
     })
   },
   data: () => {
     return {
-      trickName: ''
+      trickName: '',
+      stepNumber: 1,
+      trickVideo: null,
+      previewVideoSrc: ''
     }
   },
   methods: {
-      ...mapMutations('tricks', [
-      'reset'
-    ]),
-    ...mapMutations({
+    ...mapMutations('tricks', {
       resetTricks: 'reset'
     }),
     ...mapActions('tricks', ['createTrick']),
     async saveTrick() {
-      await this.createTrick( { trick: { name: this.trickName } })
-      this.trickName = ''
+
+      const form = new FormData();
+      form.append('video', this.trickVideo);
+      form.append('name', this.trickName);
+
+      await this.createTrick({ trickFormData: form })
+      this.trickName = '';
+      this.previewVideoSrc = '';
+      URL.revokeObjectURL(this.trickVideo);
+      this.trickVideo = null;
+      this.stepNumber = 1;
+    },
+    preparePreview() {
+      this.previewVideoSrc = URL.createObjectURL(this.trickVideo);
+      this.stepNumber++;
     }
   }
- /* async fetch () {
-    await this.$store.dispatch('fetchMessage')
-  }*/
-  /*asyncData(payload){
-    return payload.$axios.get('http://localhost:5000/api/home')
-    .then(({ data }) => {
-      return { message: data }
-    });
-  },*/
 }
 
 </script>
