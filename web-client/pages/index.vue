@@ -39,7 +39,7 @@
             </v-card>
             <div class="d-flex justify-space-between">
               <v-btn @click="stepNumber--"><<< Back</v-btn>
-              <v-btn color="primary" @click="preparePreview" :disabled="!trickName">Continue >>></v-btn>
+              <v-btn color="primary" @click="preparePreview" :disabled="!trickCleanedName">Continue >>></v-btn>
             </div>
           </v-stepper-content>
 
@@ -68,7 +68,10 @@ export default {
   computed: {
     ...mapState('tricks', {
       tricks: state => state.tricks
-    })
+    }),
+    trickCleanedName() {
+      return this.trickName.trim();
+    }
   },
   data: () => {
     return {
@@ -87,7 +90,7 @@ export default {
 
       const form = new FormData();
       form.append('video', this.trickVideo);
-      form.append('name', this.trickName);
+      form.append('name', this.trickCleanedName);
 
       await this.createTrick({ trickFormData: form })
       this.trickName = '';
