@@ -23,11 +23,14 @@ namespace WebApi
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Tricking library API", Version = "v1"}); });
             
+            
             services.AddCors(opt =>
                 opt.AddPolicy(AllCorsPolicyName, build =>
                     build.AllowAnyHeader()
                     .AllowAnyOrigin()
                     .AllowAnyMethod()));
+
+            services.AddSingleton<TrickyStore>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

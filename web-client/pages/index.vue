@@ -5,89 +5,68 @@
         <NuxtLogo />
         <VuetifyLogo />
       </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          {{ message }}
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <div v-if="this.tricks">
+        <p v-for="t in this.tricks">
+          {{ t.name }}
+        </p>
+      </div>
+
+      <div>
+        <v-text-field labe="Trick Name" v-model="trickName"></v-text-field>
+        <v-btn @click="saveTrick">Save trick</v-btn>
+      </div>
+
+      <div>
+        {{ message }}
+      </div>
+
+      <v-btn @click="reset">Reset message</v-btn>
+      <v-btn @click="reset">Reset tricks</v-btn>
+
     </v-col>
   </v-row>
 </template>
 
 <script>
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
-  data: () => ({
-    message: '',
-  }),
-  asyncData(payload){
+
+  computed: {
+    ...mapState({
+      message: state => state.message
+    }),
+    ...mapState('tricks', {
+      tricks: state => state.tricks
+    })
+  },
+  data: () => {
+    return {
+      trickName: ''
+    }
+  },
+  methods: {
+      ...mapMutations('tricks', [
+      'reset'
+    ]),
+    ...mapMutations({
+      resetTricks: 'reset'
+    }),
+    ...mapActions('tricks', ['createTrick']),
+    async saveTrick() {
+      await this.createTrick( { trick: { name: this.trickName } })
+      this.trickName = ''
+    }
+  }
+ /* async fetch () {
+    await this.$store.dispatch('fetchMessage')
+  }*/
+  /*asyncData(payload){
     return payload.$axios.get('http://localhost:5000/api/home')
     .then(({ data }) => {
       return { message: data }
     });
-  },
+  },*/
 }
 
 </script>
