@@ -11,9 +11,6 @@
             </div>
           </div>
         </div>
-
-        <upload-trick></upload-trick>
-        <category-form></category-form>
       </v-col>
     </v-row>
 </template>

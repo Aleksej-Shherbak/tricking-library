@@ -1,5 +1,12 @@
 ﻿<template>
   <v-dialog @click:outside="closeTrickDialog" :value="isUploadPopupOpened">
+
+    <template v-slot:activator>
+      <v-btn depressed @click="toggleUploadTrickActivity">
+        Upload trick
+      </v-btn>
+    </template>
+
     <v-stepper v-model="stepNumber">
       <v-stepper-header>
         <v-stepper-step :complete="stepNumber === 1" step="1">Select category</v-stepper-step>
