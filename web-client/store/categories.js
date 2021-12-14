@@ -20,9 +20,9 @@ export const mutations = {
 export const actions = {
   async fetchCategories ({ commit }) {
     const result = await this.$axios.$get('/api/categories');
-    commit('setCategories', result);
+    commit('setCategories', { categories: result });
   },
-  async createCategory({commit, dispatch}, category) {
+  async createCategory({commit, dispatch}, { category }) {
     await this.$axios.$post('/api/categories', category);
     await dispatch('fetchCategories');
   }

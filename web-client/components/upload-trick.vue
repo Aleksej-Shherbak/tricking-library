@@ -1,7 +1,7 @@
 ﻿<template>
   <v-dialog @click:outside="closeTrickDialog" :value="isUploadPopupOpened">
 
-    <template v-slot:activator>
+    <template v-slot:activator="{ on }">
       <v-btn depressed @click="toggleUploadTrickActivity">
         Upload trick
       </v-btn>
@@ -29,7 +29,7 @@
           <v-card class="mb-12 pa-2">
             <v-select
               class="category-select"
-              :items="[{text: 'Backflips', value: '123'}, {text: 'Jumps', value: '222'}, {text: 'Dances', value: '444'}]"
+              :items="mapCategorySelectItems"
               label="Chose trick type"
               v-model="categoryId"
               outlined
@@ -85,8 +85,17 @@ export default {
   name: "upload-trick",
   computed: {
     ...mapState('tricks', ['tricks', 'isUploadPopupOpened']),
+    ...mapState('categories', ['categories']),
     trickCleanedName() {
       return this.trickName.trim();
+    },
+    mapCategorySelectItems() {
+      return this.categories.map(({ name, id }) => {
+        return {
+          text: name,
+          value: id,
+        };
+      });
     }
   },
   data: () => {

@@ -1,7 +1,7 @@
 ﻿<template>
   <v-dialog @click:outside="closeCategoryDialog" :value="isCategoryDialogOpen">
 
-    <template v-slot:activator>
+    <template v-slot:activator="{ on }">
       <v-btn depressed @click="toggleCategoryDialogActivity">
         Create categpry
       </v-btn>
@@ -36,14 +36,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('category', ['isCategoryDialogOpen']),
+    ...mapState('categories', ['isCategoryDialogOpen']),
     cleanedCategoryName() {
       return this.categoryName.trim();
     }
   },
   methods: {
-    ...mapActions('category', ['createCategory']),
-    ...mapMutations('category', ['toggleCategoryDialogActivity']),
+    ...mapActions('categories', ['createCategory']),
+    ...mapMutations('categories', ['toggleCategoryDialogActivity']),
     async saveCategory() {
       await this.createCategory({ category: { name: this.categoryName } })
       this.closeCategoryDialog();

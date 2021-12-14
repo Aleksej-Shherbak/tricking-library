@@ -19,6 +19,11 @@ namespace TrickingLibrary.WebApi.Controllers
         public IActionResult GetVideo([Required] string video)
         {
             var path = Path.Combine(_env.WebRootPath, video);
+            if (!System.IO.File.Exists(path))
+            {
+                return NotFound();
+            }
+
             return new FileStreamResult(new FileStream(path, FileMode.Open), "video/*");
         }
     }
