@@ -115,6 +115,7 @@ export default {
       const form = new FormData();
       form.append('video', this.trickVideo);
       form.append('name', this.trickCleanedName);
+      form.append('categoryId', this.categoryId);
 
       await this.createTrick({trickFormData: form})
       this.closeTrickDialog();

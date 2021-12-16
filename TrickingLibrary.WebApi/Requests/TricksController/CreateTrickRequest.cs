@@ -9,5 +9,7 @@ namespace TrickingLibrary.WebApi.Requests.TricksController
         public string Name { get; set; }
         [Required]
         public IFormFile Video { get; set; }
+        [Required]
+        public string CategoryId { get; set; }
     }
 }

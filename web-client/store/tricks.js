@@ -1,13 +1,15 @@
 ﻿const initState = () => ({
-  tricks: [],
+  tricks: {},
   isUploadPopupOpened: false
 });
 
 export const state = initState;
 
 export const mutations = {
-  setTricks(state, { tricks }) {
-    state.tricks = tricks;
+  setTricks(state, { tricks, categoryId }) {
+    let newTricks = {};
+    newTricks[categoryId] = tricks;
+    state.tricks = { ...state.tricks, ...newTricks };
   },
   reset(state) {
     Object.assign(state, initState());
@@ -18,12 +20,15 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchTricks({ commit }) {
-    const tricks = await this.$axios.$get('/api/tricks');
-    commit('setTricks', { tricks });
-  },
   async createTrick({ commit, dispatch }, { trickFormData } ) {
     await this.$axios.$post('/api/tricks', trickFormData);
-    await dispatch('fetchTricks');
-  }
+  },
+  async fetchTricksInCategory ({ commit, state }, { categoryId }) {
+    if (state.tricks[categoryId] !== undefined) {
+      return;
+    }
+
+    const result = await this.$axios.$get(`/api/categories/${categoryId}/tricks`);
+    commit('setTricks', { categoryId, tricks: result });
+  },
 }

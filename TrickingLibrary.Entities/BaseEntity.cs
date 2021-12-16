@@ -1,8 +1,8 @@
 ﻿namespace TrickingLibrary.Entities
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity<KType>
     {
-        public int Id { get; set; }
+        public KType Id { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace TrickingLibrary.WebApi.Controllers
         
         [HttpGet("{video}")]
         public IActionResult GetVideo([Required] string video)
-        {
+        { 
             var path = Path.Combine(_env.WebRootPath, video);
             if (!System.IO.File.Exists(path))
             {

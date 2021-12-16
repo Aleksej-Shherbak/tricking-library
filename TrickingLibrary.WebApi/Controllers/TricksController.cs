@@ -25,14 +25,21 @@ namespace TrickingLibrary.WebApi.Controllers
         }
 
         [HttpGet()]
-        public Task<Trick[]> All() => _applicationDbContext.Tricks.ToArrayAsync();
+        public Task<Trick[]> All() => _applicationDbContext.Tricks
+            .Where(x => !x.IsDeleted)
+            .ToArrayAsync();
 
         [HttpGet("{id}")]
         public Task<Trick> Get(int id) => _applicationDbContext.Tricks.FirstOrDefaultAsync(x => x.Id == id);
 
         [HttpPost()]
-        public async Task<Trick> Create([FromForm] CreateTrickRequest trick)
+        public async Task<ActionResult<Trick>> Create([FromForm] CreateTrickRequest trick)
         {
+            if (!await _applicationDbContext.Categories.AnyAsync(x => x.Id == trick.CategoryId))
+            {
+                return BadRequest("Category not found!");
+            }
+
             var mime = trick.Video.FileName.Split('.').Last();
             var fileName = string.Concat(Path.GetRandomFileName(), ".", mime);
             var savePath = Path.Combine(_env.WebRootPath, fileName);
@@ -42,12 +49,13 @@ namespace TrickingLibrary.WebApi.Controllers
             var newTrick = new Trick
             {
                 Name = trick.Name,
-                Video = fileName
+                Video = fileName,
+                CategoryId = trick.CategoryId
             };
 
             await _applicationDbContext.AddAsync(newTrick);
             await _applicationDbContext.SaveChangesAsync();
-            return newTrick;
+            return Ok(newTrick);
         }
 
         [HttpPut()]
