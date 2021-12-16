@@ -82,7 +82,7 @@
 import {mapState, mapActions, mapMutations} from 'vuex';
 
 export default {
-  name: "upload-trick",
+  name: "trick-form",
   computed: {
     ...mapState('tricks', ['tricks', 'isUploadPopupOpened']),
     ...mapState('categories', ['categories']),
