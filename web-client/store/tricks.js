@@ -1,34 +1,30 @@
 ﻿const initState = () => ({
-  tricks: {},
-  isUploadPopupOpened: false
+  tricks: [],
+  isTrickDialogOpen: false
 });
 
 export const state = initState;
 
 export const mutations = {
-  setTricks(state, { tricks, categoryId }) {
-    let newTricks = {};
-    newTricks[categoryId] = tricks;
-    state.tricks = { ...state.tricks, ...newTricks };
-  },
   reset(state) {
     Object.assign(state, initState());
   },
-  toggleUploadTrickActivity (state) {
-    state.isUploadPopupOpened = !state.isUploadPopupOpened;
+  setTricks(state, { tricks }) {
+    state.tricks = tricks;
+  },
+  toggleTrickDialogActivity(state) {
+    state.isTrickDialogOpen = !state.isTrickDialogOpen;
   }
 }
 
 export const actions = {
-  async createTrick({ commit, dispatch }, { trickFormData } ) {
-    await this.$axios.$post('/api/tricks', trickFormData);
+  async fetchTricks({ commit }) {
+    const result = await this.$axios.$get('/api/tricks');
+    commit('setTricks', { tricks: result });
   },
-  async fetchTricksInCategory ({ commit, state }, { categoryId }) {
-    if (state.tricks[categoryId] !== undefined) {
-      return;
-    }
 
-    const result = await this.$axios.$get(`/api/categories/${categoryId}/tricks`);
-    commit('setTricks', { categoryId, tricks: result });
-  },
+  async createTrick({commit, dispatch}, { trick }) {
+    await this.$axios.$post('/api/tricks', trick);
+    await dispatch('fetchTricks');
+  }
 }

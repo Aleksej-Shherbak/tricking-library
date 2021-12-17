@@ -1,73 +1,75 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
-using TrickingLibrary.WebApi.Requests.TricksController;
 
 namespace TrickingLibrary.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TricksController : ControllerBase
+    public class TricksController: ControllerBase
     {
-        private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IWebHostEnvironment _env;
+        private readonly ApplicationDbContext _context;
 
-        public TricksController(ApplicationDbContext applicationDbContext, IWebHostEnvironment env)
+        public TricksController(ApplicationDbContext context)
         {
-            _applicationDbContext = applicationDbContext;
-            _env = env;
+            _context = context;
         }
 
+        [HttpGet("{trickId}/submissions")]
+        public Task<Submission[]> GetSubmissionsForTrick(string trickId) => _context.Submissions
+            .Where(x => x.TrickId == trickId && !x.IsDeleted).ToArrayAsync();
+        
         [HttpGet()]
-        public Task<Trick[]> All() => _applicationDbContext.Tricks
-            .Where(x => !x.IsDeleted)
-            .ToArrayAsync();
-
-        [HttpGet("{id}")]
-        public Task<Trick> Get(int id) => _applicationDbContext.Tricks.FirstOrDefaultAsync(x => x.Id == id);
+        public Task<Trick[]> Index() => _context.Tricks.ToArrayAsync();
 
         [HttpPost()]
-        public async Task<ActionResult<Trick>> Create([FromForm] CreateTrickRequest trick)
+        public async Task<ActionResult<Trick>> Create(Trick trick)
         {
-            if (!await _applicationDbContext.Categories.AnyAsync(x => x.Id == trick.CategoryId))
+            // Create slug
+            trick.Id = Regex.Replace(trick.Name.Trim(), @"\s+", " ")
+                .Replace(" ", "-")
+                .ToLowerInvariant();
+            // check if exists
+            if (await _context.Tricks.AnyAsync(x => x.Id == trick.Id))
             {
-                return BadRequest("Category not found!");
+                return BadRequest("Trick already exists");
             }
 
-            var mime = trick.Video.FileName.Split('.').Last();
-            var fileName = string.Concat(Path.GetRandomFileName(), ".", mime);
-            var savePath = Path.Combine(_env.WebRootPath, fileName);
-
-            await using var fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write);
-            await trick.Video.CopyToAsync(fileStream);
-            var newTrick = new Trick
-            {
-                Name = trick.Name,
-                Video = fileName,
-                CategoryId = trick.CategoryId
-            };
-
-            await _applicationDbContext.AddAsync(newTrick);
-            await _applicationDbContext.SaveChangesAsync();
-            return Ok(newTrick);
+            await _context.Tricks.AddAsync(trick);
+            await _context.SaveChangesAsync();
+            return trick;
         }
-
+        
         [HttpPut()]
-        public IActionResult Update([FromBody] Trick trick)
+        public async Task<ActionResult<Trick>> Update(Trick trick)
         {
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(trick.Id))
+            {
+                return NotFound();
+            }
 
+            await _context.Tricks.AddAsync(trick);
+            await _context.SaveChangesAsync();
+            return Ok(trick);
+        }
+        
         [HttpDelete("{id}")]
-        public IActionResult Update(int id)
+        public async Task<ActionResult<Trick>> Delete(string trickId)
         {
-            throw new NotImplementedException();
+           var trick = await _context.Tricks.FirstOrDefaultAsync(x => x.Id == trickId);
+            if (trick == null)
+            {
+                return NotFound();
+            }
+
+            trick.IsDeleted = true;
+            await _context.Tricks.AddAsync(trick);
+            await _context.SaveChangesAsync();
+            return Ok(trick);
         }
     }
 }

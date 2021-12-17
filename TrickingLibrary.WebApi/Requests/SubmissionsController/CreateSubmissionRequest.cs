@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace TrickingLibrary.WebApi.Requests.TricksController
+namespace TrickingLibrary.WebApi.Requests.SubmissionsController
 {
-    public class CreateTrickRequest
+    public class CreateSubmissionRequest
     {
         [Required]
         public string Name { get; set; }
         [Required]
         public IFormFile Video { get; set; }
         [Required]
-        public string CategoryId { get; set; }
+        public string TrickId { get; set; }
     }
 }

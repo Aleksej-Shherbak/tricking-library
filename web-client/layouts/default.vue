@@ -8,7 +8,7 @@
           <v-spacer></v-spacer>
 
           <trick-form />
-          <category-form />
+          <submission-form />
         </v-app-bar>
         <Nuxt />
       </v-container>
@@ -17,13 +17,13 @@
 </template>
 
 <script>
-  import trickForm from '../components/forms/trick-form';
-  import categoryForm from '../components/forms/category-form';
+  import TrickForm from '../components/forms/trick-form';
+  import SubmissionForm from '../components/forms/submission-form';
 
 export default {
   components: {
-    trickForm,
-    categoryForm
+    TrickForm,
+    SubmissionForm
   }
 }
 </script>

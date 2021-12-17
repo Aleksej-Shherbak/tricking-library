@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="d-flex justify-center align-start">
-      <div v-if="this.tricks[categoryId]" class="mx-2">
-        <div v-for="t in this.tricks[categoryId]">
+      <div v-if="this.submissions[trickId]" class="mx-2">
+        <div v-for="t in this.submissions[trickId]">
           {{ t.name }}
           <div>
             <video controls="controls" width="400" height="300"
@@ -10,11 +10,11 @@
         </div>
       </div>
       <div v-else>
-        There are no tricks
+        There are no submissions for this trick
       </div>
 
     <div class="mx-2 sticky">
-      Category: {{ categoryId }}
+      Trick: {{ trickId }}
     </div>
   </div>
 </template>
@@ -24,14 +24,14 @@ import { mapState } from "vuex";
 
 export default {
   computed: {
-    categoryId: function (){
-      return this.$route.params.category;
+    trickId: function (){
+      return this.$route.params.trick;
     },
-    ...mapState('tricks', ['tricks']),
+    ...mapState('submissions', ['submissions']),
   },
     async fetch() {
-      const categoryId = this.categoryId;
-      await this.$store.dispatch('tricks/fetchTricksInCategory', { categoryId })
+      const trickId = this.trickId;
+      await this.$store.dispatch('submissions/fetchSubmissionsForTrick', { trickId })
     }
 }
 </script>
