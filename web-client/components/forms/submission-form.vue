@@ -29,7 +29,7 @@
           <v-card class="mb-12 pa-2">
             <v-select
               class="trick-select"
-              :items="mapTrickSelectItems"
+              :items="trickItems"
               label="Chose trick type"
               v-model="trickId"
               outlined
@@ -79,24 +79,17 @@
 </template>
 
 <script>
-import {mapState, mapActions, mapMutations} from 'vuex';
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: "submission-form",
   computed: {
     ...mapState('submissions', ['submissions', 'isSubmissionPopupOpened']),
     ...mapState('tricks', ['tricks']),
+    ...mapGetters('tricks', ['trickItems']),
     cleanedName() {
       return this.name.trim();
     },
-    mapTrickSelectItems() {
-      return this.tricks.map(({ name, id }) => {
-        return {
-          text: name,
-          value: id,
-        };
-      });
-    }
   },
   data: () => {
     return {

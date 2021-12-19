@@ -1,18 +1,14 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 namespace TrickingLibrary.Entities
 {
     public class Trick: BaseEntity<string>
     {
         public string Name { get; set; }
-        /*public string Description { get; set; }
-        public string DifficultyId { get; set; }
-        public Difficulty Difficulty { get; set; }*/
-    }
-
-    /*public class Difficulty : BaseEntity<string>
-    {
         public string Description { get; set; }
-        public IList<Trick> Categories { get; set; }
-    }*/
+        public string Difficulty { get; set; }
+        public IList<TrickRelationship> Prerequisites { get; set; }
+        public IList<TrickRelationship> Progressions { get; set; }
+        public IList<TrickCategory> TrickCategories { get; set; }
+    }
 }

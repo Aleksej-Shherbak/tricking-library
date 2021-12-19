@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
+using TrickingLibrary.WebApi.FormModels;
+using TrickingLibrary.WebApi.Mapping;
+using TrickingLibrary.WebApi.ResponseModels;
 
 namespace TrickingLibrary.WebApi.Controllers
 {
@@ -24,28 +27,43 @@ namespace TrickingLibrary.WebApi.Controllers
             .Where(x => x.TrickId == trickId && !x.IsDeleted).ToArrayAsync();
         
         [HttpGet()]
-        public Task<Trick[]> Index() => _context.Tricks.ToArrayAsync();
+        public async Task<TrickResponseModel[]> Index() => 
+            (await _context.Tricks.Include(x => x.TrickCategories).ToArrayAsync())
+            .Select(x => x.MapToViewModels())
+            .ToArray();
 
         [HttpPost()]
-        public async Task<ActionResult<Trick>> Create(Trick trick)
+        public async Task<ActionResult<TrickResponseModel>> Create([FromBody] TrickFormModel model)
         {
             // Create slug
-            trick.Id = Regex.Replace(trick.Name.Trim(), @"\s+", " ")
+            var id = Regex.Replace(model.Name.Trim(), @"\s+", " ")
                 .Replace(" ", "-")
                 .ToLowerInvariant();
             // check if exists
-            if (await _context.Tricks.AnyAsync(x => x.Id == trick.Id))
+            if (await _context.Tricks.AnyAsync(x => x.Id == id))
             {
                 return BadRequest("Trick already exists");
             }
+            
+            var trick = new Trick
+            {
+                Id = id,
+                Name = model.Name,
+                Description = model.Description,
+                Difficulty = model.Difficulty,
+                TrickCategories = model.Categories.Select(x => new TrickCategory
+                {
+                    CategoryId = x
+                }).ToList()
+            };
 
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return trick;
+            return trick.MapToViewModels();
         }
         
         [HttpPut()]
-        public async Task<ActionResult<Trick>> Update(Trick trick)
+        public async Task<ActionResult<TrickResponseModel>> Update(Trick trick)
         {
             if (string.IsNullOrWhiteSpace(trick.Id))
             {
@@ -54,11 +72,11 @@ namespace TrickingLibrary.WebApi.Controllers
 
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return Ok(trick);
+            return Ok(trick.MapToViewModels());
         }
         
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Trick>> Delete(string trickId)
+        public async Task<ActionResult<TrickResponseModel>> Delete(string trickId)
         {
            var trick = await _context.Tricks.FirstOrDefaultAsync(x => x.Id == trickId);
             if (trick == null)
@@ -69,7 +87,7 @@ namespace TrickingLibrary.WebApi.Controllers
             trick.IsDeleted = true;
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return Ok(trick);
+            return Ok(trick.MapToViewModels());
         }
     }
 }

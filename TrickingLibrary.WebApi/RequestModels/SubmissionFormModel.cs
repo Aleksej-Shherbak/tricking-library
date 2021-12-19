@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace TrickingLibrary.WebApi.Requests.SubmissionsController
+namespace TrickingLibrary.WebApi.FormModels
 {
-    public class CreateSubmissionRequest
+    public class SubmissionFormModel
     {
         [Required]
         public string Name { get; set; }

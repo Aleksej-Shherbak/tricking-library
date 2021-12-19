@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
-using TrickingLibrary.WebApi.Requests.SubmissionsController;
+using TrickingLibrary.WebApi.FormModels;
 
 namespace TrickingLibrary.WebApi.Controllers
 {
@@ -33,7 +33,7 @@ namespace TrickingLibrary.WebApi.Controllers
         public Task<Submission> Get(int id) => _applicationDbContext.Submissions.FirstOrDefaultAsync(x => x.Id == id);
 
         [HttpPost()]
-        public async Task<ActionResult<Submission>> Create([FromForm] CreateSubmissionRequest submission)
+        public async Task<ActionResult<Submission>> Create([FromForm] SubmissionFormModel submission)
         {
             if (!await _applicationDbContext.Tricks.AnyAsync(x => x.Id == submission.TrickId))
             {
