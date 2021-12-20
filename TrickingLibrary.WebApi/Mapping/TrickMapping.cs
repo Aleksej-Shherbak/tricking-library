@@ -14,7 +14,9 @@ namespace TrickingLibrary.WebApi.Mapping
                 Description = source.Description,
                 Name = source.Name,
                 Difficulty = source.Difficulty,
-                Categories = source.TrickCategories?.Select(x => x.CategoryId).ToArray()
+                Prerequisites = source.Prerequisites.Select(x => x.PrerequisiteId),
+                Progression = source.Progressions.Select(x => x.ProgressionId),
+                Categories = source.TrickCategories?.Select(x => x.CategoryId)
             };
         }
     }

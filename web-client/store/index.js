@@ -1,5 +1,4 @@
-﻿const initState = () => ({
-});
+﻿const initState = () => ({});
 
 export const state = initState;
 
@@ -11,7 +10,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }) {
-    await dispatch('tricks/fetchTricks');
+  nuxtServerInit({commit, dispatch}) {
+    return dispatch('tricks/fetchTricks');
   }
 }

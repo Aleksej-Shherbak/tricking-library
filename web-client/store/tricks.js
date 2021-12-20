@@ -10,6 +10,7 @@
 export const state = initState;
 
 export const getters = {
+  trickById: state => id => state.tricks.find(x => x.id === id),
   trickItems: state => state.tricks.map(({ name, id }) => ({
     text: name,
     value: id
@@ -50,10 +51,12 @@ export const mutations = {
 
 export const actions = {
   async fetchTricks({ commit }) {
-    const result = await this.$axios.$get('/api/tricks');
+    const tricks = await this.$axios.$get('/api/tricks');
     const difficulties = await this.$axios.$get('/api/difficulties');
     const categories = await this.$axios.$get('/api/categories');
-    commit('setTricks', { tricks: result  });
+
+    console.log(tricks, difficulties, categories);
+    commit('setTricks', { tricks: tricks  });
     commit('setCategories', { categories: categories });
     commit('setDifficulties', { difficulties: difficulties });
   },

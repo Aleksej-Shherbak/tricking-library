@@ -28,7 +28,11 @@ namespace TrickingLibrary.WebApi.Controllers
         
         [HttpGet()]
         public async Task<TrickResponseModel[]> Index() => 
-            (await _context.Tricks.Include(x => x.TrickCategories).ToArrayAsync())
+            (await _context.Tricks
+                .Include(x => x.TrickCategories)
+                .Include(x => x.Prerequisites)
+                .Include(x => x.Progressions)
+                .ToArrayAsync())
             .Select(x => x.MapToViewModels())
             .ToArray();
 
