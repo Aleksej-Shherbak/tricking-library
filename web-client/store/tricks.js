@@ -10,6 +10,7 @@
 export const state = initState;
 
 export const getters = {
+  difficultyById: state => id => state.difficulties.find(x => x.id === id),
   trickById: state => id => state.tricks.find(x => x.id === id),
   categoryById: state => id => state.categories.find(x => x.id === id),
   trickItems: state => state.tricks.map(({ name, id }) => ({

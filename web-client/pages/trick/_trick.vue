@@ -14,10 +14,13 @@
       </div>
 
     <v-sheet class="pa-3 ma-2 sticky">
-      <div class="text-h6">Trick: {{ trick.name }}</div>
+      <div class="text-h5"> <span >Trick: {{ trick.name }}</span>
+        <v-chip class="mb-1 ml-2" :to="`/difficulty/${difficulty.id}`" small>
+          {{ difficulty.name }} difficulty
+        </v-chip>
+      </div>
       <v-divider class="my-1"></v-divider>
       <div class="text-body-2"> {{ trick.description }}</div>
-      <div class="text-body-2"> {{ trick.difficulty }}</div>
       <v-divider class="my-1"></v-divider>
       <div v-for="rd in relatedData" v-if="rd.data.length > 0">
         <div class="text-subtitle-1">{{ rd.title }}:</div>
@@ -35,15 +38,16 @@
 import {mapGetters, mapState} from "vuex";
 
 export default {
+  data:() => ({
+    trick: null,
+    difficulty: null,
+  }),
   computed: {
     ...mapState('submissions', ['submissions']),
     ...mapState('tricks', ['categories', 'tricks']),
-    ...mapGetters('tricks', ['trickById']),
+    ...mapGetters('tricks', ['trickById', 'difficultyById']),
     trickId: function () {
       return this.$route.params.trick;
-    },
-    trick() {
-      return this.trickById(this.trickId);
     },
     relatedData() {
       return [
@@ -70,10 +74,16 @@ export default {
   },
   async fetch() {
     const trickId = this.trickId;
+    this.trick = this.trickById(trickId);
+    this.difficulty = this.difficultyById(this.trick.difficulty);
+
     await this.$store.dispatch('submissions/fetchSubmissionsForTrick', { trickId })
   },
   head() {
     // meta data for the page is here ...
+    if (!this.trick) {
+      return {};
+    }
     return {
       title: this.trick.name,
       meta: [
