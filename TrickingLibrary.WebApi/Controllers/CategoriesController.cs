@@ -28,7 +28,7 @@ namespace TrickingLibrary.WebApi.Controllers
         [HttpGet("{id}/tricks")]
         public Task<Trick[]> ListCategoryTricks(string id) => _context.TrickCategories
             .Include(x => x.Trick)
-            .Where(x => x.TrickId == id && !x.Trick.IsDeleted)
+            .Where(x => x.CategoryId == id && !x.Trick.IsDeleted)
             .Select(x => x.Trick)
             .ToArrayAsync();
         
