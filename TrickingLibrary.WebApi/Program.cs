@@ -64,6 +64,20 @@ namespace TrickingLibrary.WebApi
                             }
                         }
                     });
+
+                    ctx.Add(new Submission
+                    {
+                        TrickId = "back-flip",
+                        Description = "Test description. I've tried to go for max height",
+                        Video = "slow_backfip.mp4"
+                    });
+                    
+                    ctx.Add(new Submission
+                    {
+                        TrickId = "back-flip",
+                        Description = "Test description.",
+                        Video = "backflip.mp4"
+                    });
                     
                     ctx.SaveChanges();
                 }

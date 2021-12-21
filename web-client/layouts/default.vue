@@ -3,7 +3,7 @@
     <v-main>
       <v-container fluid>
         <v-app-bar dense class="mb-3">
-          <v-toolbar-title>Trick library</v-toolbar-title>
+          <nuxt-link class="main-site-header text--primary text-h5" to="/">Trick library</nuxt-link>
 
           <v-spacer></v-spacer>
 
@@ -34,3 +34,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.main-site-header {
+  text-decoration: none;
+}
+</style>

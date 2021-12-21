@@ -1,22 +1,18 @@
 ﻿<template>
-  <div class="d-flex justify-center align-start">
-      <div v-if="submissions[trickId]" class="mx-2">
-        <div v-for="t in submissions[trickId]">
-          {{ t.name }}
-          <div>
-            <video controls="controls" width="400" height="300"
-                   :src="`http://localhost:5000/api/videos/${t.video}`"></video>
-          </div>
-        </div>
-      </div>
-      <div v-else>
-        There are no submissions for this trick
-      </div>
+  <div class="d-flex mx-3 justify-center align-start">
+    <div v-if="submissions[trickId]" class="mx-2">
+      <v-card class="mx-3 mb-2" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
+        <video-player :video="t.video"></video-player>
+        <v-card-text>
+          <p>{{ t.description }}</p>
+        </v-card-text>
+      </v-card>
+    </div>
 
-    <v-sheet class="pa-3 ma-2 sticky">
-      <div class="text-h5"> <span >Trick: {{ trick.name }}</span>
+    <v-sheet class="pa-3 sticky">
+      <div class="text-h5"><span>Trick: {{ trick.name }}</span>
         <v-chip class="mb-1 ml-2" :to="`/difficulty/${difficulty.id}`" small>
-          {{ difficulty.name }} difficulty
+          {{ difficulty.name }}
         </v-chip>
       </div>
       <v-divider class="my-1"></v-divider>
@@ -36,12 +32,16 @@
 
 <script>
 import {mapGetters, mapState} from "vuex";
+import VideoPlayer from "../../components/video-player";
 
 export default {
-  data:() => ({
+  data: () => ({
     trick: null,
     difficulty: null,
   }),
+  components: {
+    VideoPlayer
+  },
   computed: {
     ...mapState('submissions', ['submissions']),
     ...mapState('tricks', ['categories', 'tricks']),
@@ -52,20 +52,20 @@ export default {
     relatedData() {
       return [
         {
-          title : 'Categories',
-          data : this.categories.filter(({ id }) => this.trick.categories.includes(id)),
+          title: 'Categories',
+          data: this.categories.filter(({id}) => this.trick.categories.includes(id)),
           idFactory: c => `category-${c.id}`,
           routeFactory: c => `/category/${c.id}`,
         },
         {
-          title : 'Prerequisites',
-          data : this.tricks.filter(({ id }) => this.trick.prerequisites.includes(id)),
+          title: 'Prerequisites',
+          data: this.tricks.filter(({id}) => this.trick.prerequisites.includes(id)),
           idFactory: t => `trick-${t.id}`,
           routeFactory: t => `/trick/${t.id}`,
         },
         {
-          title : 'Progressions',
-          data : this.tricks.filter(({ id }) => this.trick.progression.includes(id)),
+          title: 'Progressions',
+          data: this.tricks.filter(({id}) => this.trick.progression.includes(id)),
           idFactory: t => `trick-${t.id}`,
           routeFactory: t => `/trick/${t.id}`,
         },
@@ -77,7 +77,7 @@ export default {
     this.trick = this.trickById(trickId);
     this.difficulty = this.difficultyById(this.trick.difficulty);
 
-    await this.$store.dispatch('submissions/fetchSubmissionsForTrick', { trickId })
+    await this.$store.dispatch('submissions/fetchSubmissionsForTrick', {trickId})
   },
   head() {
     // meta data for the page is here ...

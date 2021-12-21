@@ -64,7 +64,7 @@
         <v-stepper-content step="4">
           <v-card class="mb-12 pa-2">
             <p class="mb-2">{{ name }} </p>
-            <video width="100%" height="300" controls="controls" :src="previewVideoSrc"></video>
+            <video-player video="previewVideoSrc"/>
           </v-card>
           <div class="d-flex justify-space-between">
             <v-btn @click="stepNumber--"><<< Back</v-btn>
@@ -80,9 +80,13 @@
 
 <script>
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import VideoPlayer from "../../components/video-player";
 
 export default {
   name: "submission-form",
+  components: {
+    VideoPlayer
+  },
   computed: {
     ...mapState('submissions', ['submissions', 'isSubmissionPopupOpened']),
     ...mapState('tricks', ['tricks']),
