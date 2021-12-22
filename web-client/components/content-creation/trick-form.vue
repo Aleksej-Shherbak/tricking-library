@@ -1,42 +1,45 @@
 ﻿<template>
-  <form class="pa-6">
-    <v-text-field
-      class="mb-3"
-      v-model="trickName"
-      :counter="40"
-      maxlength="40"
-      label="Trick name"
-      required
-      error-count="1"
-    ></v-text-field>
+  <v-card>
+    <v-card-title>Trick</v-card-title>
+    <form class="pa-6">
+      <v-text-field
+        class="mb-3"
+        v-model="trickName"
+        :counter="40"
+        maxlength="40"
+        label="Trick name"
+        required
+        error-count="1"
+      ></v-text-field>
 
-    <v-text-field
-      class="mb-3"
-      v-model="description"
-      :counter="300"
-      maxlength="300"
-      label="Trick description"
-      required
-      error-count="1"
-    ></v-text-field>
+      <v-text-field
+        class="mb-3"
+        v-model="description"
+        :counter="300"
+        maxlength="300"
+        label="Trick description"
+        required
+        error-count="1"
+      ></v-text-field>
 
-    <v-select :items="difficultyItems" label="Difficulty" v-model="difficulty" outlined
-               chips deletable-chips></v-select>
+      <v-select :items="difficultyItems" label="Difficulty" v-model="difficulty" outlined
+                chips deletable-chips></v-select>
 
-    <v-select :items="trickItems" label="Prerequisites" v-model="prerequisites" outlined
-              multiple chips deletable-chips></v-select>
+      <v-select :items="trickItems" label="Prerequisites" v-model="prerequisites" outlined
+                multiple chips deletable-chips></v-select>
 
-    <v-select :items="trickItems" label="Progressions" v-model="progressions" outlined
-              multiple chips deletable-chips></v-select>
+      <v-select :items="trickItems" label="Progressions" v-model="progressions" outlined
+                multiple chips deletable-chips></v-select>
 
-    <v-select :items="categoryItems" label="Categories" v-model="categories" outlined
-              multiple chips deletable-chips></v-select>
+      <v-select :items="categoryItems" label="Categories" v-model="categories" outlined
+                multiple chips deletable-chips></v-select>
 
 
-    <div class="d-flex justify-space-between">
-      <v-btn class="mr-4" @click="saveTrick" :disabled="!cleanedTrickName">Submit</v-btn>
-    </div>
-  </form>
+      <div class="d-flex justify-space-between">
+        <v-btn class="mr-4" @click="saveTrick" :disabled="!cleanedTrickName">Submit</v-btn>
+      </div>
+    </form>
+  </v-card>
 </template>
 
 <script>
@@ -64,7 +67,8 @@ export default {
     ...mapActions('tricks', ['createTrick']),
     ...mapMutations('tricks', ['toggleTrickDialogActivity']),
     async saveTrick() {
-      await this.createTrick({ trick: {
+      await this.createTrick({
+        trick: {
           name: this.trickName,
           description: this.description,
           difficulty: this.difficulty,
