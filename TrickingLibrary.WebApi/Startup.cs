@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TrickingLibrary.Data;
+using TrickingLibrary.WebApi.BackgroundServices;
 
 namespace TrickingLibrary.WebApi
 {
@@ -26,6 +28,9 @@ namespace TrickingLibrary.WebApi
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Tricking library API", Version = "v1"}); });
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Dev"));
+
+            services.AddHostedService<VideoProcessingBackgroundService>();
+            services.AddSingleton (_ => Channel.CreateUnbounded<ProcessVideoMessage>());
             
             services.AddCors(opt =>
                 opt.AddPolicy(AllCorsPolicyName, build =>

@@ -69,14 +69,16 @@ namespace TrickingLibrary.WebApi
                     {
                         TrickId = "back-flip",
                         Description = "Test description. I've tried to go for max height",
-                        Video = "slow_backfip.mp4"
+                        Video = "slow_backfip.mp4",
+                        IsVideoProcessed = true,
                     });
                     
                     ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description.",
-                        Video = "backflip.mp4"
+                        Video = "backflip.mp4",
+                        IsVideoProcessed = true,
                     });
                     
                     ctx.SaveChanges();

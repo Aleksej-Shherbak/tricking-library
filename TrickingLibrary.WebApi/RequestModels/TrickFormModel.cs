@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TrickingLibrary.WebApi.FormModels
+namespace TrickingLibrary.WebApi.RequestModels
 {
     public class TrickFormModel
     {

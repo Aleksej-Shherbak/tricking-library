@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
-using TrickingLibrary.WebApi.FormModels;
+using TrickingLibrary.WebApi.BackgroundServices;
+using TrickingLibrary.WebApi.RequestModels;
 
 namespace TrickingLibrary.WebApi.Controllers
 {
@@ -27,50 +28,49 @@ namespace TrickingLibrary.WebApi.Controllers
 
         [HttpGet()]
         public Task<Submission[]> All() => _applicationDbContext.Submissions
-            .Where(x => !x.IsDeleted)
+            .Where(x => !x.IsDeleted && x.IsVideoProcessed)
             .ToArrayAsync();
 
         [HttpGet("{id}")]
         public Task<Submission> Get(int id) => _applicationDbContext.Submissions.FirstOrDefaultAsync(x => x.Id == id);
 
         [HttpPost()]
-        public async Task<ActionResult<Submission>> Create([FromForm] SubmissionFormModel submission)
+        public async Task<ActionResult<Submission>> Create([FromForm] SubmissionFormModel submission, 
+            [FromServices] Channel<ProcessVideoMessage> channel)
         {
             if (!await _applicationDbContext.Tricks.AnyAsync(x => x.Id == submission.TrickId))
             {
                 return BadRequest("Category not found!");
             }
 
-            var mime = submission.Video.FileName.Split('.').Last();
-            var fileName = string.Concat(Path.GetRandomFileName(), ".", mime);
+            var mime = Path.GetExtension(submission.Video.FileName);
+            var fileName = string.Concat($"temp_{DateTime.Now.Ticks}", mime);
             var savePath = Path.Combine(_env.WebRootPath, fileName);
 
             await using var fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write);
             await submission.Video.CopyToAsync(fileStream);
-
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = Path.Combine(_env.ContentRootPath, "Ffmpeg", "ffmpeg.exe"),
-                Arguments = $"-y -i {savePath} -an -vf scale=540x380 test2.mp4",
-                WorkingDirectory = _env.WebRootPath,
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-
-            using var process = new Process{ StartInfo = startInfo };
-            process.Start();
-            await process.WaitForExitAsync();
             
-            var newTrick = new Submission
+            var newSubmission = new Submission
             {
                 Name = submission.Name,
+                Description = submission.Description,
                 Video = fileName,
                 TrickId = submission.TrickId
             };
 
-            await _applicationDbContext.AddAsync(newTrick);
+            // TODO: validate video.
+            await _applicationDbContext.AddAsync(newSubmission);
+
+            // TODO: Maybe it worth to create db entity after processing the video?
             await _applicationDbContext.SaveChangesAsync();
-            return Ok(newTrick);
+            await channel.Writer.WriteAsync(new ProcessVideoMessage
+            {
+                SubmissionId = newSubmission.Id,
+                Input = fileName,
+                Output = $"converted_{DateTime.Now.Ticks}.mp4",
+            });
+            
+            return Ok(newSubmission);
         }
 
         [HttpPut()]

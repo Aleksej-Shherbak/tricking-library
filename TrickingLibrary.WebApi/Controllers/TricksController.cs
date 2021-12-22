@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
-using TrickingLibrary.WebApi.FormModels;
 using TrickingLibrary.WebApi.Mapping;
+using TrickingLibrary.WebApi.RequestModels;
 using TrickingLibrary.WebApi.ResponseModels;
 
 namespace TrickingLibrary.WebApi.Controllers

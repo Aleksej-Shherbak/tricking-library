@@ -44,17 +44,17 @@
 
       <v-stepper-content step="3">
         <v-card class="mb-12 pa-2">
-          <v-text-field labe="Submission Name" v-model="name"></v-text-field>
+          <v-text-field labe="Submission Name" v-model="description"></v-text-field>
         </v-card>
         <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
-          <v-btn color="primary" @click="stepNumber++" :disabled="!cleanedName">Continue >>></v-btn>
+          <v-btn color="primary" @click="stepNumber++" :disabled="!cleanedDescription">Continue >>></v-btn>
         </div>
       </v-stepper-content>
 
       <v-stepper-content step="4">
         <v-card class="mb-12 pa-2">
-          <p class="mb-2">{{ name }} </p>
+          <p class="mb-2">{{ cleanedDescription }} </p>
           <video-player :video="this.previewUrl"/>
         </v-card>
         <div class="d-flex justify-space-between">
@@ -90,10 +90,14 @@ export default {
     cleanedName() {
       return this.name.trim();
     },
+    cleanedDescription() {
+      return this.description.trim();
+    },
   },
   data: () => {
     return {
       name: '',
+      description: '',
       stepNumber: 1,
       trickId: null
     }
@@ -105,6 +109,7 @@ export default {
       const form = new FormData();
       form.append('video', this.video);
       form.append('name', this.cleanedName);
+      form.append('description', this.cleanedDescription);
       form.append('trickId', this.trickId);
 
       await this.createSubmission({ submissionFormData: form});
