@@ -5,7 +5,7 @@
       <v-icon v-else class="pause" size="78">mdi-pause</v-icon>
     </div>
     <video ref="video" muted loop width="400" height="300"
-           :src="`http://localhost:5000/api/videos/${video}`"></video>
+           :src="video"></video>
   </div>
 </template>
 
@@ -16,7 +16,6 @@ export default {
   props: {
     video: {
       required: true,
-      type: String
     }
   },
   data: () => ({

@@ -30,6 +30,12 @@
 <script>
 export default {
   name: "category-form",
+  props: {
+    resetForm: {
+      required: true,
+      type: Function
+    }
+  },
   data: () => {
     return {
       form: {
@@ -41,6 +47,7 @@ export default {
   methods: {
     save() {
       this.$axios.$post('/api/categories', this.form);
+      this.resetForm();
     },
   }
 }

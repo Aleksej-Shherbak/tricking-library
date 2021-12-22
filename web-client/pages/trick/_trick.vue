@@ -2,7 +2,7 @@
   <item-content-layout>
     <template v-slot:content>
       <v-card class="mb-3" v-if="submissions[trickId]" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
-        <video-player :video="t.video"></video-player>
+        <video-player :video="`http://localhost:5000/api/videos/${t.video}`"></video-player>
         <v-card-text>
           <p>{{ t.description }}</p>
         </v-card-text>

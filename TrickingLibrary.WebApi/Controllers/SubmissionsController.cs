@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,6 +47,20 @@ namespace TrickingLibrary.WebApi.Controllers
 
             await using var fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write);
             await submission.Video.CopyToAsync(fileStream);
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = Path.Combine(_env.ContentRootPath, "Ffmpeg", "ffmpeg.exe"),
+                Arguments = $"-y -i {savePath} -an -vf scale=540x380 test2.mp4",
+                WorkingDirectory = _env.WebRootPath,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            using var process = new Process{ StartInfo = startInfo };
+            process.Start();
+            await process.WaitForExitAsync();
+            
             var newTrick = new Submission
             {
                 Name = submission.Name,

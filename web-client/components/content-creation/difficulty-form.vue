@@ -20,7 +20,6 @@
           label="Difficulty description"
           required
         ></v-text-field>
-
         <v-btn @click="save">Save</v-btn>
       </form>
     </v-card-text>
@@ -31,7 +30,12 @@
 
 export default {
   name: "difficulty-form",
-
+  props: {
+    resetForm: {
+      required: true,
+      type: Function
+    }
+  },
   data: () => {
     return {
       form: {
@@ -43,6 +47,7 @@ export default {
   methods: {
     save() {
       this.$axios.$post('/api/difficulties', this.form);
+      this.resetForm();
     },
   }
 }

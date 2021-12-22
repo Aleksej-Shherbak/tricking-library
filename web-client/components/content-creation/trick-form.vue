@@ -43,10 +43,16 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapMutations} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: "trick-form",
+  props: {
+    resetForm: {
+      required: true,
+      type: Function
+    }
+  },
   data: () => {
     return {
       trickName: '',
@@ -65,7 +71,6 @@ export default {
   },
   methods: {
     ...mapActions('tricks', ['createTrick']),
-    ...mapMutations('tricks', ['toggleTrickDialogActivity']),
     async saveTrick() {
       await this.createTrick({
         trick: {
@@ -75,16 +80,8 @@ export default {
           categories: this.categories,
         }
       })
-      this.closeTrickDialog();
+      this.resetForm();
     },
-    closeTrickDialog() {
-      this.toggleTrickDialogActivity();
-      this.trickName = '';
-      this.description = '';
-      this.difficulty = '';
-      this.prerequisites = [];
-      this.progressions = [];
-    }
   }
 }
 </script>

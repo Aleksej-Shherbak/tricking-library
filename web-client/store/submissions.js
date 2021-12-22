@@ -16,7 +16,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async createSubmission({ commit, dispatch }, { submissionFormData } ) {
+  async createSubmission({ commit }, { submissionFormData } ) {
     await this.$axios.$post('/api/submissions', submissionFormData);
   },
 

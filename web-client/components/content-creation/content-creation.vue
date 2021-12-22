@@ -18,7 +18,7 @@
     </template>
 
     <div v-if="component" class="content-creation-dialog">
-      <component :is="component"></component>
+      <component :is="component" v-bind="{resetForm}"></component>
       <v-btn absolute fab small top right color="red" @click="reset">
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -60,7 +60,7 @@ export default {
       this.isActive = true;
       this.component = component
     },
-    reset() {
+    resetForm() {
       this.isActive = false;
       this.component = null;
     }

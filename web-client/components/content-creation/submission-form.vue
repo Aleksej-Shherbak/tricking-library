@@ -34,11 +34,11 @@
 
       <v-stepper-content step="2">
         <v-card class="mb-12 pa-2">
-          <v-file-input accept="video/*" v-model="video" label="Add a trick video here"></v-file-input>
+          <v-file-input accept="video/*" @change="this.setVideo" label="Add a trick video here"></v-file-input>
         </v-card>
         <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
-          <v-btn color="primary" @click="stepNumber++" :disabled="!video">Continue >>></v-btn>
+          <v-btn color="primary" @click="stepNumber++" :disabled="!this.video">Continue >>></v-btn>
         </div>
       </v-stepper-content>
 
@@ -48,14 +48,14 @@
         </v-card>
         <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
-          <v-btn color="primary" @click="preparePreview" :disabled="!cleanedName">Continue >>></v-btn>
+          <v-btn color="primary" @click="stepNumber++" :disabled="!cleanedName">Continue >>></v-btn>
         </div>
       </v-stepper-content>
 
       <v-stepper-content step="4">
         <v-card class="mb-12 pa-2">
           <p class="mb-2">{{ name }} </p>
-          <video-player video="previewVideoSrc"/>
+          <video-player :video="this.previewUrl"/>
         </v-card>
         <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
@@ -74,12 +74,19 @@ import VideoPlayer from "../../components/video-player";
 
 export default {
   name: "submission-form",
+  props: {
+    resetForm: {
+      required: true,
+      type: Function
+    }
+  },
   components: {
     VideoPlayer
   },
   computed: {
     ...mapState('tricks', ['tricks']),
     ...mapGetters('tricks', ['trickItems']),
+    ...mapGetters('upload-video', ['video', 'previewUrl']),
     cleanedName() {
       return this.name.trim();
     },
@@ -88,25 +95,23 @@ export default {
     return {
       name: '',
       stepNumber: 1,
-      video: null,
-      previewVideoSrc: '',
       trickId: null
     }
   },
   methods: {
     ...mapActions('submissions', ['createSubmission']),
+    ...mapMutations('upload-video', ['setVideo', 'dispose']),
     async save() {
       const form = new FormData();
       form.append('video', this.video);
       form.append('name', this.cleanedName);
       form.append('trickId', this.trickId);
 
-      await this.createSubmission({ submissionFormData: form})
+      await this.createSubmission({ submissionFormData: form});
+
+      this.dispose();
+      this.resetForm();
     },
-    preparePreview() {
-      this.previewVideoSrc = URL.createObjectURL(this.video);
-      this.stepNumber++;
-    }
   }
 }
 </script>
