@@ -1,6 +1,5 @@
 ﻿const initState = () => ({
   submissions: {},
-  isSubmissionPopupOpened: false
 });
 
 export const state = initState;
@@ -13,9 +12,6 @@ export const mutations = {
   },
   reset(state) {
     Object.assign(state, initState());
-  },
-  toggleSubmissionPopup (state) {
-    state.isSubmissionPopupOpened = !state.isSubmissionPopupOpened;
   }
 }
 

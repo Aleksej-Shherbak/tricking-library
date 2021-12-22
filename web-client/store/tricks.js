@@ -2,9 +2,6 @@
   tricks: [],
   categories: [],
   difficulties: [],
-  isTrickDialogOpen: false,
-  isCategoryDialogOpen: false,
-  isDifficultiesDialogOpen: false
 });
 
 export const state = initState;
@@ -40,15 +37,6 @@ export const mutations = {
   setDifficulties(state, { difficulties }) {
     state.difficulties = difficulties;
   },
-  toggleTrickDialogActivity(state) {
-    state.isTrickDialogOpen = !state.isTrickDialogOpen;
-  },
-  toggleCategoryDialogActivity(state) {
-    state.isCategoryDialogOpen = !state.isCategoryDialogOpen;
-  },
-  toggleDifficultiesDialogActivity(state) {
-    state.isDifficultiesDialogOpen = !state.isDifficultiesDialogOpen;
-  }
 }
 
 export const actions = {

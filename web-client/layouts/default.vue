@@ -3,14 +3,14 @@
     <v-main>
       <v-container fluid>
         <v-app-bar dense class="mb-3">
-          <nuxt-link class="main-site-header text--primary text-h5" to="/">Trick library</nuxt-link>
+          <nuxt-link class="text-h5 text--primary mr-2 main-site-header" style="text-decoration: none;" to="/">
+            <span class="d-none d-md-flex">Tricking Library</span>
+            <span class="d-flex d-md-none">TL</span>
+          </nuxt-link>
 
           <v-spacer></v-spacer>
 
-          <trick-form />
-          <submission-form />
-          <category-form/>
-          <difficulty-form/>
+          <content-creation/>
 
         </v-app-bar>
         <Nuxt />
@@ -20,17 +20,11 @@
 </template>
 
 <script>
-  import TrickForm from '../components/forms/trick-form';
-  import SubmissionForm from '../components/forms/submission-form';
-  import DifficultyForm from '../components/forms/difficulty-form';
-  import CategoryForm from '../components/forms/category-form';
+  import ContentCreation from '../components/content-creation/content-creation';
 
 export default {
   components: {
-    TrickForm,
-    SubmissionForm,
-    DifficultyForm,
-    CategoryForm
+    ContentCreation
   }
 }
 </script>

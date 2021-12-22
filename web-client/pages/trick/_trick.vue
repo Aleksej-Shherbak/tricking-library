@@ -1,15 +1,14 @@
 ﻿<template>
-  <div class="d-flex mx-3 justify-center align-start">
-    <div v-if="submissions[trickId]" class="mx-2">
-      <v-card class="mx-3 mb-2" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
+  <item-content-layout>
+    <template v-slot:content>
+      <v-card class="mb-3" v-if="submissions[trickId]" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
         <video-player :video="t.video"></video-player>
         <v-card-text>
           <p>{{ t.description }}</p>
         </v-card-text>
       </v-card>
-    </div>
-
-    <v-sheet class="pa-3 sticky">
+    </template>
+    <template v-slot:item>
       <div class="text-h5"><span>Trick: {{ trick.name }}</span>
         <v-chip class="mb-1 ml-2" :to="`/difficulty/${difficulty.id}`" small>
           {{ difficulty.name }}
@@ -26,8 +25,9 @@
           </v-chip>
         </v-chip-group>
       </div>
-    </v-sheet>
-  </div>
+    </template>
+  </item-content-layout>
+
 </template>
 
 <script>
@@ -40,7 +40,7 @@ export default {
     difficulty: null,
   }),
   components: {
-    VideoPlayer
+    VideoPlayer,
   },
   computed: {
     ...mapState('submissions', ['submissions']),

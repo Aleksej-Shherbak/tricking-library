@@ -37,7 +37,7 @@ export default {
 <style lang="scss" scoped>
 .video-container {
   position: relative;
-  width: 400px;
+  width: 100%;
   display: flex;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
