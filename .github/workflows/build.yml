@@ -13,10 +13,10 @@ jobs:
         run: dotnet --version
     
       - name: Build server
-        run: dotnet build 
+        run: dotnet build TrickingLibrary.sln
         
       - name: List after build TrickingLibrary.sln
-        run: ls ./WebApi -R
+        run: ls ./TrickingLibrary.WebApi -R
 
       - name: Chec npm cli
         run: npm --version
