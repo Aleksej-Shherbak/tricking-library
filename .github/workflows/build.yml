@@ -13,7 +13,7 @@ jobs:
         run: dotnet --version
     
       - name: Build server
-        run: dotnet build TrickingLibrary.sln
+        run: dotnet build
         
       - name: List after build TrickingLibrary.sln
         run: ls ./TrickingLibrary.WebApi -R
