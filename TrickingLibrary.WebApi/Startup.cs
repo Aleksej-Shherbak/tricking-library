@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TrickingLibrary.Data;
 using TrickingLibrary.WebApi.BackgroundServices;
+using TrickingLibrary.WebApi.Middlewares;
+using TrickingLibrary.WebApi.Services;
 
 namespace TrickingLibrary.WebApi
 {
@@ -30,8 +32,11 @@ namespace TrickingLibrary.WebApi
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Dev"));
 
             services.AddHostedService<VideoProcessingBackgroundService>();
-            services.AddSingleton (_ => Channel.CreateUnbounded<ProcessVideoMessage>());
-            
+            services.AddSingleton(_ => Channel.CreateUnbounded<ProcessVideoMessage>());
+
+            services.AddSingleton<VideoManager>();
+            services.AddScoped<SubmissionService>();
+
             services.AddCors(opt =>
                 opt.AddPolicy(AllCorsPolicyName, build =>
                     build.AllowAnyHeader()
@@ -49,6 +54,8 @@ namespace TrickingLibrary.WebApi
             }
 
             app.UseCors(AllCorsPolicyName);
+            
+            app.UseExceptionHandlerMiddleware();
             
             app.UseRouting();
 

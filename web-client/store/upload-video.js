@@ -22,7 +22,7 @@ export const mutations = {
       state.objectUrl = URL.createObjectURL(state.video);
     }
   },
-  dispose (state) {
+  disposeVideo (state) {
     if (state.objectUrl) {
       URL.revokeObjectURL(state.objectUrl);
       Object.assign(state, initState());

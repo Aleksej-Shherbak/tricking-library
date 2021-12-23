@@ -3,7 +3,6 @@
     public class ProcessVideoMessage
     {
         public int SubmissionId { get; set; }
-        public string Input { get; set; }
-        public string Output { get; set; }
+        public string TemporaryVideoName { get; set; }
     }
 }

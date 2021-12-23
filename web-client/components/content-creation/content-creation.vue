@@ -19,7 +19,7 @@
 
     <div v-if="component" class="content-creation-dialog">
       <component :is="component" v-bind="{resetForm}"></component>
-      <v-btn absolute fab small top right color="red" @click="reset">
+      <v-btn absolute fab small top right color="red" @click="resetForm">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </div>

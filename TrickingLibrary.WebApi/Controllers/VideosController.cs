@@ -2,24 +2,26 @@
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using TrickingLibrary.WebApi.BackgroundServices;
+using TrickingLibrary.WebApi.Services;
 
 namespace TrickingLibrary.WebApi.Controllers
 {
     [Route("api/[controller]")]
     public class VideosController: ControllerBase
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly VideoManager _videoManager;
 
-        public VideosController(IWebHostEnvironment env)
+        public VideosController(VideoManager videoManager)
         {
-            _env = env;
+            _videoManager = videoManager;
         }
         
         [HttpGet("{video}")]
         public IActionResult GetVideo([Required] string video)
         { 
-            var path = Path.Combine(_env.WebRootPath, video);
-            if (!System.IO.File.Exists(path))
+            var path = _videoManager.GetVideoPath(video);
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
             {
                 return NotFound();
             }

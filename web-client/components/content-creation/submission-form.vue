@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     ...mapActions('submissions', ['createSubmission']),
-    ...mapMutations('upload-video', ['setVideo', 'dispose']),
+    ...mapMutations('upload-video', ['setVideo', 'disposeVideo']),
     async save() {
       const form = new FormData();
       form.append('video', this.video);
@@ -114,7 +114,7 @@ export default {
 
       await this.createSubmission({ submissionFormData: form});
 
-      this.dispose();
+      this.disposeVideo();
       this.resetForm();
     },
   }
