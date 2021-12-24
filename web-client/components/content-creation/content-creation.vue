@@ -9,68 +9,73 @@
         </template>
         <v-list>
           <v-list-item v-for="(item, i) in menuItems" :key="`ccd-menu-${i}`"
-            @click="activate({ component: item.component })">
-
+            @click="activate({ item: item })">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </template>
 
-    <div v-if="component" class="content-creation-dialog">
-      <component :is="component" v-bind="{resetForm}"></component>
-      <v-btn absolute fab small top right color="red" @click="resetForm">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </div>
+    <v-card v-if="item">
+      <v-card-title>
+        {{ item.title }}
+        <v-spacer></v-spacer>
+        <v-btn small color="red" @click="resetForm">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+      <v-card-text>
+      <component :is="item.component" v-bind="{resetForm}"></component>
+      </v-card-text>
+    </v-card>
 
   </v-dialog>
 </template>
 
 <script>
 import TrickForm from './trick-form';
-import SubmissionForm from './submission-form';
+import SubmissionSteps from './submission-steps';
 import DifficultyForm from './difficulty-form';
 import CategoryForm from './category-form';
+import {mapMutations} from "vuex";
+
+const submissionStepsComponentTitle = 'Submission';
 
 export default {
   name: "content-creation",
   components: {
     TrickForm,
-    SubmissionForm,
+    SubmissionSteps,
     DifficultyForm,
     CategoryForm
   },
   data: () => ({
-    component: null,
+    item: null,
     isActive: false,
   }),
   computed: {
     menuItems() {
       return [
-        { component: TrickForm, title: "Trick" },
-        { component: SubmissionForm, title: "Submission" },
-        { component: DifficultyForm, title: "Difficulty" },
-        { component: CategoryForm, title: "Category" },
+        { component: TrickForm, title: 'Trick' },
+        { component: SubmissionSteps, title: submissionStepsComponentTitle },
+        { component: DifficultyForm, title: 'Difficulty' },
+        { component: CategoryForm, title: 'Category' },
       ]
     }
   },
   methods: {
-    activate({ component }) {
+    ...mapMutations('upload-video', ['disposeVideo']),
+    activate({ item }) {
       this.isActive = true;
-      this.component = component
+      this.item = item;
     },
     resetForm() {
       this.isActive = false;
-      this.component = null;
+      if (this.item.title === submissionStepsComponentTitle) {
+        this.disposeVideo();
+      }
+      this.item = null;
     }
   },
 }
 </script>
-
-<style scoped>
-.content-creation-dialog {
-  position: relative;
-  margin-top: 25px;
-}
-</style>

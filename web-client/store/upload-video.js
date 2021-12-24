@@ -16,7 +16,6 @@ export const getters = {
 
 export const mutations = {
   setVideo(state, video) {
-    console.log(video)
     if (video) {
       state.video = video;
       state.objectUrl = URL.createObjectURL(state.video);

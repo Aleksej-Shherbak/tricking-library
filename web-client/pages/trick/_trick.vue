@@ -1,32 +1,35 @@
 ﻿<template>
-  <item-content-layout>
-    <template v-slot:content>
-      <v-card class="mb-3" v-if="submissions[trickId]" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
-        <video-player :video="`http://localhost:5000/api/videos/${t.video}`"></video-player>
-        <v-card-text>
-          <p>{{ t.description }}</p>
-        </v-card-text>
-      </v-card>
-    </template>
-    <template v-slot:item>
-      <div class="text-h5"><span>Trick: {{ trick.name }}</span>
-        <v-chip class="mb-1 ml-2" :to="`/difficulty/${difficulty.id}`" small>
-          {{ difficulty.name }}
-        </v-chip>
-      </div>
-      <v-divider class="my-1"></v-divider>
-      <div class="text-body-2"> {{ trick.description }}</div>
-      <v-divider class="my-1"></v-divider>
-      <div v-for="rd in relatedData" v-if="rd.data.length > 0">
-        <div class="text-subtitle-1">{{ rd.title }}:</div>
-        <v-chip-group>
-          <v-chip v-for="d in rd.data" :key="rd.idFactory(d)" small :to="rd.routeFactory(d)">
-            {{ d.name }}
+  <div>
+    <item-content-layout v-if="trick">
+      <template v-slot:content>
+        <v-card class="mb-3" v-if="submissions[trickId]" v-for="t in submissions[trickId]" :key="`trick-${trickId}-submissions-${t.id}`">
+          <video-player :video="`http://localhost:5000/api/videos/${t.video}`"></video-player>
+          <v-card-text>
+            <p>{{ t.description }}</p>
+          </v-card-text>
+        </v-card>
+      </template>
+      <template v-slot:item>
+        <div class="text-h5"><span>Trick: {{ trick.name }}</span>
+          <v-chip class="mb-1 ml-2" :to="`/difficulty/${difficulty.id}`" small>
+            {{ difficulty.name }}
           </v-chip>
-        </v-chip-group>
-      </div>
-    </template>
-  </item-content-layout>
+        </div>
+        <v-divider class="my-1"></v-divider>
+        <div class="text-body-2"> {{ trick.description }}</div>
+        <v-divider class="my-1"></v-divider>
+        <div v-for="rd in relatedData" v-if="rd.data.length > 0">
+          <div class="text-subtitle-1">{{ rd.title }}:</div>
+          <v-chip-group>
+            <v-chip v-for="d in rd.data" :key="rd.idFactory(d)" small :to="rd.routeFactory(d)">
+              {{ d.name }}
+            </v-chip>
+          </v-chip-group>
+        </div>
+      </template>
+    </item-content-layout>
+    <div v-else class="text-h5 mt-10 text-center">Trick not found <v-icon x-large>mdi-emoticon-dead</v-icon></div>
+  </div>
 
 </template>
 

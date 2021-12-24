@@ -18,32 +18,27 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <v-card class="mb-12 pa-2">
-          <v-select
-            class="trick-select"
-            :items="trickItems"
-            label="Chose trick type"
-            v-model="trickId"
-            outlined
-          ></v-select>
+        <v-card class="mb-12 px-4 py-1">
+        <v-select full-width :items="this.trickItems" label="Chose trick type" v-model="trickId" />
         </v-card>
         <div class="d-flex justify-space-between">
-          <v-btn color="primary" @click="stepNumber++" :disabled="!trickId">Continue >>></v-btn>
+            <v-btn color="primary" @click="stepNumber++" :disabled="!trickId">Continue >>></v-btn>
         </div>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-card class="mb-12 pa-2">
-          <v-file-input accept="video/*" @change="this.setVideo" label="Add a trick video here"></v-file-input>
+        <v-card class="mb-12 px-4 py-1">
+          <v-file-input accept="video/*" @click:clear="this.disposeVideo" @change="this.setVideo" label="Add a trick video here"></v-file-input>
         </v-card>
-        <div class="d-flex justify-space-between">
+          <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
-          <v-btn color="primary" @click="stepNumber++" :disabled="!this.video">Continue >>></v-btn>
-        </div>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="stepNumber++" :disabled="!this.video">Continue >>></v-btn>
+          </div>
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <v-card class="mb-12 pa-2">
+        <v-card class="mb-12 px-4 py-1">
           <v-text-field labe="Submission Name" v-model="description"></v-text-field>
         </v-card>
         <div class="d-flex justify-space-between">
@@ -53,9 +48,14 @@
       </v-stepper-content>
 
       <v-stepper-content step="4">
-        <v-card class="mb-12 pa-2">
-          <p class="mb-2">{{ cleanedDescription }} </p>
-          <video-player :video="this.previewUrl"/>
+        <v-card class="mb-12 pa-2 py-1">
+          <v-card-title>
+            <p class="mb-2">{{ cleanedDescription }} </p>
+          </v-card-title>
+
+          <v-card-text>
+            <video-player :video="this.previewUrl"/>
+          </v-card-text>
         </v-card>
         <div class="d-flex justify-space-between">
           <v-btn @click="stepNumber--"><<< Back</v-btn>
@@ -73,7 +73,7 @@ import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import VideoPlayer from "../../components/video-player";
 
 export default {
-  name: "submission-form",
+  name: "submission-steps",
   props: {
     resetForm: {
       required: true,
@@ -114,15 +114,8 @@ export default {
 
       await this.createSubmission({ submissionFormData: form});
 
-      this.disposeVideo();
       this.resetForm();
     },
   }
 }
 </script>
-
-<style scoped>
-  .trick-select {
-    max-width: 400px;
-  }
-</style>
