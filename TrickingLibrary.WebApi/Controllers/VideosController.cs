@@ -20,7 +20,7 @@ namespace TrickingLibrary.WebApi.Controllers
         [HttpGet("{video}")]
         public IActionResult GetVideo([Required] string video)
         { 
-            var path = _videoManager.GetVideoPath(video);
+            var path = _videoManager.GetFilePath(video);
             if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
             {
                 return NotFound();

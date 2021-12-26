@@ -6,7 +6,7 @@ namespace TrickingLibrary.WebApi.Mapping
 {
     public static class TrickMapping
     {
-        public static TrickResponseModel MapToViewModels(this Trick source)
+        public static TrickResponseModel MapToViewModel(this Trick source)
         {
             return new TrickResponseModel
             {

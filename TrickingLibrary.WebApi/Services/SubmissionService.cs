@@ -24,7 +24,7 @@ namespace TrickingLibrary.WebApi.Services
             _channel = channel;
         }
         
-        public async Task CreateSubmissionAsync(SubmissionFormModel submission)
+        public async Task CreateSubmissionAsync(SubmissionRequestModel submission)
         {
             if (!await _dbContext.Tricks.AnyAsync(x => x.Id == submission.TrickId))
             {
@@ -50,11 +50,16 @@ namespace TrickingLibrary.WebApi.Services
             
         }
         
-        public async Task SetSubmissionVideoAsync(int submissionId, string fileName, CancellationToken stoppingToken)
+        public async Task SetSubmissionVideoAsync(int submissionId, string videoFileName, string thumbnailFileName, CancellationToken stoppingToken)
         {
-            if (string.IsNullOrWhiteSpace(fileName))
+            if (string.IsNullOrWhiteSpace(videoFileName))
             {
-                throw new ArgumentException("File name can not be null or empty.");
+                throw new ArgumentException("Video file name can not be null or empty.");
+            }
+            
+            if (string.IsNullOrWhiteSpace(thumbnailFileName))
+            {
+                throw new ArgumentException("Thumbnail file name can not be null or empty.");
             }
 
             var submission = await _dbContext.Submissions.FirstOrDefaultAsync(
@@ -65,7 +70,11 @@ namespace TrickingLibrary.WebApi.Services
                 throw new InvalidOperationException(
                     $"Can not set video to submission with id {submissionId}. Submission not found");
             }
-            submission.Video = fileName;
+            submission.Video = new Video
+            {
+                FileName = videoFileName,
+                ThumbnailFileName = thumbnailFileName 
+            };
             submission.IsVideoProcessed = true;
                     
             await _dbContext.SaveChangesAsync(stoppingToken);

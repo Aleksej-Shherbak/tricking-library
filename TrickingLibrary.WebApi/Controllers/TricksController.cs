@@ -23,8 +23,13 @@ namespace TrickingLibrary.WebApi.Controllers
         }
 
         [HttpGet("{trickId}/submissions")]
-        public Task<Submission[]> GetSubmissionsForTrick(string trickId) => _context.Submissions
-            .Where(x => x.TrickId == trickId && !x.IsDeleted).ToArrayAsync();
+        public async Task<SubmissionResponseModel[]> GetSubmissionsForTrick(string trickId) => 
+            (await _context.Submissions
+                .Include(x => x.Video)
+                .Where(x => x.TrickId == trickId && !x.IsDeleted)
+                .ToArrayAsync())
+            .Select(x => x.MapToViewModel())
+            .ToArray();
         
         [HttpGet()]
         public async Task<TrickResponseModel[]> Index() => 
@@ -33,7 +38,7 @@ namespace TrickingLibrary.WebApi.Controllers
                 .Include(x => x.Prerequisites)
                 .Include(x => x.Progressions)
                 .ToArrayAsync())
-            .Select(x => x.MapToViewModels())
+            .Select(x => x.MapToViewModel())
             .ToArray();
 
         [HttpPost()]
@@ -63,7 +68,7 @@ namespace TrickingLibrary.WebApi.Controllers
 
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return trick.MapToViewModels();
+            return trick.MapToViewModel();
         }
         
         [HttpPut()]
@@ -76,7 +81,7 @@ namespace TrickingLibrary.WebApi.Controllers
 
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return Ok(trick.MapToViewModels());
+            return Ok(trick.MapToViewModel());
         }
         
         [HttpDelete("{id}")]
@@ -91,7 +96,7 @@ namespace TrickingLibrary.WebApi.Controllers
             trick.IsDeleted = true;
             await _context.Tricks.AddAsync(trick);
             await _context.SaveChangesAsync();
-            return Ok(trick.MapToViewModels());
+            return Ok(trick.MapToViewModel());
         }
     }
 }

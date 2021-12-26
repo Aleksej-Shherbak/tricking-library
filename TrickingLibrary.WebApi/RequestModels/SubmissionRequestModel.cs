@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace TrickingLibrary.WebApi.RequestModels
 {
-    public class SubmissionFormModel
+    public class SubmissionRequestModel
     {
         public string Name { get; set; }
         [Required]

@@ -43,12 +43,15 @@ namespace TrickingLibrary.WebApi.BackgroundServices
                 try
                 {
                     var convertedVideoName = _videoManager.GetConvertedVideoName;
-                    var inputPath = _videoManager.GetVideoPath(message.TemporaryVideoName);
-                    var outputPath = Path.Combine(_env.WebRootPath, convertedVideoName);
+                    var thumbnailFileName = _videoManager.GetThumbnailFileName;
+                    var inputPath = _videoManager.GetFilePath(message.TemporaryVideoName);
+                    var outputConvertedVideoPath =  _videoManager.GetFilePath(convertedVideoName);
+                    var outputThumbnailPath =  _videoManager.GetFilePath(thumbnailFileName);
                     var startInfo = new ProcessStartInfo
                     {
                         FileName = Path.Combine(_env.ContentRootPath, "Ffmpeg", "ffmpeg.exe"),
-                        Arguments = $"-y -i {inputPath} -an -vf scale=540x380 {outputPath}",
+                        Arguments = 
+                            $"-y -i {inputPath} -an -vf scale=540x380 {outputConvertedVideoPath} -ss 00:00:00 -vframes 1 -vf scale=540x380 {outputThumbnailPath}",
                         WorkingDirectory = _videoManager.WorkingDirectory,
                         CreateNoWindow = true,
                         UseShellExecute = false
@@ -61,14 +64,14 @@ namespace TrickingLibrary.WebApi.BackgroundServices
                     if (!_videoManager.IsVideoExists(convertedVideoName))
                     {
                         throw new Exception(
-                            $"FFMPEG failed to generate converted video with given params: input path {inputPath}, output path: {outputPath}");
+                            $"FFMPEG failed to generate converted video with given params: input path {inputPath}, output path: {outputConvertedVideoPath}");
                     }
 
                     using var scope = _serviceProvider.CreateScope();
                     var submissionService = scope.ServiceProvider.GetRequiredService<SubmissionService>();
 
                     await submissionService.SetSubmissionVideoAsync(message.SubmissionId, convertedVideoName,
-                        stoppingToken);
+                        thumbnailFileName, stoppingToken);
                 }
                 catch (Exception e)
                 {
@@ -76,7 +79,7 @@ namespace TrickingLibrary.WebApi.BackgroundServices
                 }
                 finally
                 {
-                    _videoManager.DeleteTemporaryVideo(message.TemporaryVideoName);
+                    _videoManager.DeleteVideo(message.TemporaryVideoName);
                 }
             }
         }

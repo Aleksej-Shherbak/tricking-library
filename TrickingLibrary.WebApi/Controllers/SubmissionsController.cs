@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
-using TrickingLibrary.Entities;
+using TrickingLibrary.WebApi.Mapping;
 using TrickingLibrary.WebApi.RequestModels;
+using TrickingLibrary.WebApi.ResponseModels;
 using TrickingLibrary.WebApi.Services;
 
 namespace TrickingLibrary.WebApi.Controllers
@@ -23,15 +24,22 @@ namespace TrickingLibrary.WebApi.Controllers
         }
 
         [HttpGet()]
-        public Task<Submission[]> All() => _applicationDbContext.Submissions
-            .Where(x => !x.IsDeleted && x.IsVideoProcessed)
-            .ToArrayAsync();
+        public async Task<SubmissionResponseModel[]> All() => (await _applicationDbContext.Submissions
+                .Where(x => !x.IsDeleted && x.IsVideoProcessed)
+                .Include(x => x.Video)
+                .ToArrayAsync())
+            .Select(x => x.MapToViewModel())
+            .ToArray();
+            
 
         [HttpGet("{id}")]
-        public Task<Submission> Get(int id) => _applicationDbContext.Submissions.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<SubmissionResponseModel> Get(int id) => (await _applicationDbContext.Submissions
+            .Include(x => x.Video)
+            .FirstOrDefaultAsync(x => x.Id == id))
+            .MapToViewModel();
 
         [HttpPost()]
-        public Task Create([FromForm] SubmissionFormModel submission) =>
+        public Task Create([FromForm] SubmissionRequestModel submission) =>
             _submissionService.CreateSubmissionAsync(submission);
         
     }

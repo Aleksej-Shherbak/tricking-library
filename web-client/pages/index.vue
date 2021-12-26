@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-for="section in sections">
+    <div v-for="section in sections" :key="section.title">
       <div  class="d-flex flex-column align-center">
         <h3 class="text-h5 mb-4">{{ section.title }}</h3>
         <div>
-          <v-btn class="mx-1" v-for="item in section.collection" :to="section.routeFactory(item.id)">{{ item.name }}</v-btn>
+          <v-btn class="mx-1" v-for="item in section.collection" :key="item.id" :to="section.routeFactory(item.id)">{{ item.name }}</v-btn>
         </div>
       </div>
       <v-divider class="my-5"></v-divider>

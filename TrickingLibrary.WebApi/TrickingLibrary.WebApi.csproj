@@ -10,7 +10,6 @@
 
     <ItemGroup>
       <Folder Include="Ffmpeg" />
-      <Folder Include="wwwroot" />
     </ItemGroup>
 
     <ItemGroup>

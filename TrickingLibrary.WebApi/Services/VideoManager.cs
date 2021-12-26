@@ -9,9 +9,11 @@ namespace TrickingLibrary.WebApi.Services
     public class VideoManager
     {
         private readonly IWebHostEnvironment _env;
-        public const string TempPrefix = "temp_";
-        public const string ConvertedVideoPrefix = "converted_";
-        public const string ConvertVideoFormat = "mp4";
+        private const string TempPrefix = "temp_";
+        private const string ThumbnailPrefix = "thumbnail_";
+        private const string ConvertedVideoPrefix = "converted_";
+        private const string ConvertVideoFormat = "mp4";
+        private const string ThumbnailFileFormat = "png";
 
         public VideoManager(IWebHostEnvironment env)
         {
@@ -19,9 +21,11 @@ namespace TrickingLibrary.WebApi.Services
         }
 
         public string GetConvertedVideoName => $"{ConvertedVideoPrefix}{DateTime.Now.Ticks}.{ConvertVideoFormat}";
+        public string GetThumbnailFileName => $"{ThumbnailPrefix}{DateTime.Now.Ticks}.{ThumbnailFileFormat}";
         public string WorkingDirectory => _env.WebRootPath;
         
-        public string GetVideoPath(string fileName)
+        
+        public string GetFilePath(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
             {
@@ -34,22 +38,22 @@ namespace TrickingLibrary.WebApi.Services
         public async Task<string> SaveTemporaryVideoAsync(IFormFile video)
         {
             var temporaryFileName = GetTemporaryFileName(video.FileName);
-            var savePath = GetVideoPath(temporaryFileName);
+            var savePath = GetFilePath(temporaryFileName);
             await using var fileStream = new FileStream(savePath, FileMode.Create, FileAccess.Write);
             await video.CopyToAsync(fileStream);
             return temporaryFileName;
         }
 
-        public void DeleteTemporaryVideo(string fileName)
+        public void DeleteVideo(string fileName)
         {
-            var path = GetVideoPath(fileName);
+            var path = GetFilePath(fileName);
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
         }
 
-        public bool IsVideoExists(string fileName) => File.Exists(GetVideoPath(fileName));
+        public bool IsVideoExists(string fileName) => File.Exists(GetFilePath(fileName));
 
         private string GetTemporaryFileName(string sourceFileName)
         {

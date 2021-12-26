@@ -65,20 +65,34 @@ namespace TrickingLibrary.WebApi
                         }
                     });
 
+                    ctx.Add(new Video
+                    {
+                        Id = 1,
+                        FileName = "backflip.mp4",
+                        ThumbnailFileName = "thumbnail_1.jpg",
+                    });
+                    
+                    ctx.Add(new Video
+                    {
+                        Id = 2,
+                        FileName = "slow_backfip.mp4",
+                        ThumbnailFileName = "thumbnail_2.jpg",
+                    });
+                    
                     ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description. I've tried to go for max height",
-                        Video = "slow_backfip.mp4",
                         IsVideoProcessed = true,
+                        VideoId = 1,
                     });
                     
                     ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description.",
-                        Video = "backflip.mp4",
                         IsVideoProcessed = true,
+                        VideoId = 2,
                     });
                     
                     ctx.SaveChanges();
