@@ -1,8 +1,7 @@
 ﻿namespace TrickingLibrary.Entities
 {
-    public class Video
+    public class Video: BaseEntity<int>
     {
-        public int Id { get; set; }
         public string FileName { get; set; }
 
         public string ThumbnailFileName { get; set; }

@@ -12,6 +12,7 @@
            :src="video"
            :poster="thumbnail"
            preload="none"
+           playsinline
     ></video>
   </div>
 </template>

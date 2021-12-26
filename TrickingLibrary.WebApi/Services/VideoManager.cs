@@ -13,13 +13,14 @@ namespace TrickingLibrary.WebApi.Services
         private const string ThumbnailPrefix = "thumbnail_";
         private const string ConvertedVideoPrefix = "converted_";
         private const string ConvertVideoFormat = "mp4";
-        private const string ThumbnailFileFormat = "png";
+        private const string ThumbnailFileFormat = "jpg";
 
         public VideoManager(IWebHostEnvironment env)
         {
             _env = env;
         }
 
+        public string FfmpegPath => Path.Combine(_env.ContentRootPath, "Ffmpeg", "ffmpeg.exe");
         public string GetConvertedVideoName => $"{ConvertedVideoPrefix}{DateTime.Now.Ticks}.{ConvertVideoFormat}";
         public string GetThumbnailFileName => $"{ThumbnailPrefix}{DateTime.Now.Ticks}.{ThumbnailFileFormat}";
         public string WorkingDirectory => _env.WebRootPath;
@@ -53,7 +54,7 @@ namespace TrickingLibrary.WebApi.Services
             }
         }
 
-        public bool IsVideoExists(string fileName) => File.Exists(GetFilePath(fileName));
+        public bool IsFileExists(string fileName) => File.Exists(GetFilePath(fileName));
 
         private string GetTemporaryFileName(string sourceFileName)
         {
