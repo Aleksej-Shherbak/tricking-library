@@ -9,7 +9,7 @@
           </nuxt-link>
 
           <v-spacer></v-spacer>
-
+          <v-btn depressed to="/moderation">Moderation</v-btn>
           <content-creation/>
 
         </v-app-bar>

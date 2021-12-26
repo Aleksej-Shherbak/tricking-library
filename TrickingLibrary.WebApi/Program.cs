@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
+using TrickingLibrary.Entities.Moderation;
 
 namespace TrickingLibrary.WebApi
 {
@@ -33,6 +34,21 @@ namespace TrickingLibrary.WebApi
                         Id = "backwards-roll",
                         Name = "Backwards roll",
                         Description = "This is a test Backwards roll",
+                        Difficulty = "easy",
+                        TrickCategories = new List<TrickCategory>
+                        {
+                            new TrickCategory
+                            {
+                                CategoryId = "flip"
+                            }
+                        },
+                    });
+                    
+                    ctx.Add(new Trick
+                    {
+                        Id = "forward-roll",
+                        Name = "Forwards roll",
+                        Description = "This is a test Forwards roll",
                         Difficulty = "easy",
                         TrickCategories = new List<TrickCategory>
                         {
@@ -88,7 +104,12 @@ namespace TrickingLibrary.WebApi
                             ThumbnailFileName = "thumbnail_2.jpg",
                         }
                     });
-                    
+
+                    ctx.Add(new ModerationItem
+                    {
+                        Target = "forward-roll",
+                        Type = ModerationTypes.Trick
+                    });
                     ctx.SaveChanges();
                 }
             }

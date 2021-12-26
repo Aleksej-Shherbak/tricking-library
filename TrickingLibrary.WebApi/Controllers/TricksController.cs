@@ -41,6 +41,15 @@ namespace TrickingLibrary.WebApi.Controllers
             .Select(x => x.MapToViewModel())
             .ToArray();
 
+        [HttpGet("{id}")]
+        public async Task<TrickResponseModel> Get(string id) =>
+            (await _context.Tricks
+                .Include(x => x.TrickCategories)
+                .Include(x => x.Prerequisites)
+                .Include(x => x.Progressions)
+                .FirstOrDefaultAsync(x => x.Id == id))
+            ?.MapToViewModel();
+        
         [HttpPost()]
         public async Task<ActionResult<TrickResponseModel>> Create([FromBody] TrickFormModel model)
         {

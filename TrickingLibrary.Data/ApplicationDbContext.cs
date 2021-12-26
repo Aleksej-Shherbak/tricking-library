@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Entities;
+using TrickingLibrary.Entities.Moderation;
 
 namespace TrickingLibrary.Data
 {
@@ -12,6 +13,7 @@ namespace TrickingLibrary.Data
         public DbSet<Trick> Tricks { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<ModerationItem> ModerationItems { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<TrickRelationship> TrickRelationships { get; set; }
         public DbSet<Category> Categories { get; set; }
