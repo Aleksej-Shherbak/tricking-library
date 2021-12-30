@@ -35,6 +35,7 @@ namespace TrickingLibrary.WebApi
             services.AddSingleton(_ => Channel.CreateUnbounded<ProcessVideoMessage>());
 
             services.AddSingleton<VideoManager>();
+            services.AddSingleton<CommentService>();
             services.AddScoped<SubmissionService>();
 
             services.AddCors(opt =>
