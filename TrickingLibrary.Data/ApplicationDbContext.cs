@@ -15,6 +15,7 @@ namespace TrickingLibrary.Data
         public DbSet<Video> Videos { get; set; }
         public DbSet<ModerationItem> ModerationItems { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<TrickRelationship> TrickRelationships { get; set; }
         public DbSet<Category> Categories { get; set; }

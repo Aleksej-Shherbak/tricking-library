@@ -41,18 +41,34 @@ namespace TrickingLibrary.WebApi.Controllers
         [HttpPost("{id}/comment")]
         public async Task<ActionResult<CommentResponseModel>> Comment(int id, [FromBody]Comment comment)
         {
-            var moderationItem = await _context.ModerationItems.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (moderationItem == null)
+            if (!await _context.ModerationItems.AnyAsync(x => x.Id == id))
             {
                 return NotFound();
             }
 
             comment = _commentService.CreateCommentHtmlContent(comment);
-
-            moderationItem.Comments.Add(comment);
+            comment.ModerationItemId = id;
+            _context.Add(comment);
             await _context.SaveChangesAsync();
             return Ok(comment.MapToViewModel());
+        }
+        
+        [HttpGet("{id}/reviews")]
+        public Task<Review[]> GetReviews(int id) =>
+            _context.Reviews.Where(x => x.ModerationItemId == id).ToArrayAsync();
+
+        [HttpPost("{id}/reviews")]
+        public async Task<ActionResult<Review>> Review(int id, [FromBody]Review review)
+        {
+            if (!await _context.ModerationItems.AnyAsync(x => x.Id == id))
+            {
+                return NotFound();
+            }
+
+            review.ModerationItemId = id;
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+            return Ok(review);
         }
     }
 }
