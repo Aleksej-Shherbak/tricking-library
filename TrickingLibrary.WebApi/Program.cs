@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TrickingLibrary.Data;
@@ -111,6 +112,10 @@ namespace TrickingLibrary.WebApi
                         Type = ModerationTypes.Trick
                     });
                     ctx.SaveChanges();
+                    
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                    var user = new IdentityUser("test");
+                    userManager.CreateAsync(user, "password").GetAwaiter().GetResult();
                 }
             }
             

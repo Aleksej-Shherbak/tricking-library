@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TrickingLibrary.Data;
 using TrickingLibrary.WebApi.BackgroundServices;
+using TrickingLibrary.WebApi.Extensions;
 using TrickingLibrary.WebApi.Middlewares;
 using TrickingLibrary.WebApi.Services;
 
@@ -15,10 +16,12 @@ namespace TrickingLibrary.WebApi
 {
     public class Startup
     {
+        private readonly IWebHostEnvironment _env;
         private const string AllCorsPolicyName = "All";
             
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            _env = env;
             Configuration = configuration;
         }
 
@@ -26,10 +29,14 @@ namespace TrickingLibrary.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Tricking library API", Version = "v1"}); });
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Dev"));
+
+            services.AddTrickingLibraryIdentity(Configuration, _env);
+            
+            services.AddControllers();
+            services.AddRazorPages();
 
             services.AddHostedService<VideoProcessingBackgroundService>();
             services.AddSingleton(_ => Channel.CreateUnbounded<ProcessVideoMessage>());
@@ -37,7 +44,7 @@ namespace TrickingLibrary.WebApi
             services.AddSingleton<VideoManager>();
             services.AddSingleton<CommentService>();
             services.AddScoped<SubmissionService>();
-
+            
             services.AddCors(opt =>
                 opt.AddPolicy(AllCorsPolicyName, build =>
                     build.AllowAnyHeader()
@@ -45,9 +52,9 @@ namespace TrickingLibrary.WebApi
                     .AllowAnyMethod()));
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
@@ -60,7 +67,17 @@ namespace TrickingLibrary.WebApi
             
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            
+            // TODO: auth is going here
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
         }
+        
     }
 }
