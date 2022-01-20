@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,12 @@ namespace TrickingLibrary.WebApi.Extensions
                         RedirectUris = new[] { "http://localhost:3000" },
                         PostLogoutRedirectUris = new[] { "http://localhost:3000" },
                         AllowedCorsOrigins = new[] { "http://localhost:3000" },
+                        
+                        AllowedScopes = new []
+                        {
+                            IdentityServerConstants.StandardScopes.OpenId,
+                            IdentityServerConstants.StandardScopes.Profile,
+                        }, 
                         
                         RequirePkce = true,
                         AllowAccessTokensViaBrowser = true,
