@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
 using TrickingLibrary.Entities.Moderation;
+using TrickingLibrary.WebApi.Constants;
 
 namespace TrickingLibrary.WebApi
 {
@@ -116,6 +118,11 @@ namespace TrickingLibrary.WebApi
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
                     var user = new IdentityUser("test");
                     userManager.CreateAsync(user, "password").GetAwaiter().GetResult();
+                    
+                    var mode = new IdentityUser("mod");
+                    userManager.CreateAsync(mode, "password").GetAwaiter().GetResult();
+                    userManager.AddClaimAsync(mode, new Claim(ClaimTypes.Role,
+                        TrickingLibraryConstants.Policies.Mod)).GetAwaiter().GetResult();
                 }
             }
             

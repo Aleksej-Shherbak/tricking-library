@@ -69,6 +69,7 @@ namespace TrickingLibrary.WebApi
 
             app.UseAuthentication();
             app.UseIdentityServer();
+            app.UseAuthorization();
             
             // TODO: auth is going here
 

@@ -1,10 +1,13 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrickingLibrary.Data;
 using TrickingLibrary.Entities;
+using TrickingLibrary.WebApi.Constants;
 using TrickingLibrary.WebApi.Mapping;
 using TrickingLibrary.WebApi.RequestModels;
 using TrickingLibrary.WebApi.ResponseModels;
@@ -30,6 +33,14 @@ namespace TrickingLibrary.WebApi.Controllers
                 .ToArrayAsync())
             .Select(x => x.MapToViewModel())
             .ToArray();
+        
+        [HttpGet("test")]
+        [Authorize(Policy = IdentityServerConstants.LocalApi.PolicyName)]
+        public  string Test() => "TEST";
+        
+        [HttpGet("mod")]
+        [Authorize(Policy = TrickingLibraryConstants.Policies.Mod)]
+        public  string ModeTest() => "Mod";
         
         [HttpGet()]
         public async Task<TrickResponseModel[]> Index() => 

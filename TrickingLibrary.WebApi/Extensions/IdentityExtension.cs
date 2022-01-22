@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TrickingLibrary.WebApi.Constants;
 
 namespace TrickingLibrary.WebApi.Extensions
 {
@@ -53,6 +55,14 @@ namespace TrickingLibrary.WebApi.Extensions
                     new IdentityResources.OpenId(),
                     new IdentityResources.Profile(),
                 });
+
+                identityServerBuilder.AddInMemoryApiScopes(new ApiScope[]
+                {
+                    new ApiScope(IdentityServerConstants.LocalApi.ScopeName, new string[]
+                    {
+                        ClaimTypes.Role
+                    }),
+                });
                 
                 identityServerBuilder.AddInMemoryClients(new Client[]
                 {
@@ -69,6 +79,7 @@ namespace TrickingLibrary.WebApi.Extensions
                         {
                             IdentityServerConstants.StandardScopes.OpenId,
                             IdentityServerConstants.StandardScopes.Profile,
+                            IdentityServerConstants.LocalApi.ScopeName,
                         }, 
                         
                         RequirePkce = true,
@@ -84,6 +95,18 @@ namespace TrickingLibrary.WebApi.Extensions
             {
                 // TODO: configure for production
             }
+
+            services.AddLocalApiAuthentication();
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(TrickingLibraryConstants.Policies.Mod, policy =>
+                {
+                    var is4Policy = options.GetPolicy(IdentityServerConstants.LocalApi.PolicyName);
+                    policy.Combine(is4Policy);
+                    policy.RequireClaim(ClaimTypes.Role, TrickingLibraryConstants.Roles.Mod);
+                });
+            });
             
             return services;
         }

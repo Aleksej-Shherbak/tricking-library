@@ -2,6 +2,8 @@
   <div>
     <div>
       <v-btn @click="login">Login</v-btn>
+      <v-btn @click="api('test')">Api test</v-btn>
+      <v-btn @click="api('mod')">Api mod test</v-btn>
     </div>
 
     <div v-for="section in sections" :key="section.title">
@@ -34,12 +36,19 @@ export default {
         client_id: "web-client",
         redirect_uri: "http://localhost:3000",
         response_type: "code",
-        scope: "openid profile",
+        scope: "openid profile IdentityServerApi",
         post_logout_redirect_uri: "http://localhost:3000z ",
         // silent_redirect_uri: "http://localhost:3000/",
         userStore: new WebStorageStateStore({
           store: window.localStorage
         }),
+      });
+
+      this.userMgr.getUser().then(user => {
+        if (user) {
+          console.log("user from storage ", user);
+          this.$axios.setToken(`Bearer ${user.access_token}`)
+        }
       });
 
       const { code, scope, session_state, state } = this.$route.query;
@@ -49,6 +58,7 @@ export default {
         this.userMgr.signinRedirectCallback()
         .then((user) => {
           console.log(user)
+          this.$axios.setToken(`Bearer ${user.access_token}`)
           this.$router.push('/')
         })
       }
@@ -58,6 +68,10 @@ export default {
   methods: {
     login() {
       return this.userMgr.signinRedirect();
+    },
+    api(x) {
+      return this.$axios.$get("/api/tricks/" + x)
+      .then(msg => console.log(msg));
     }
   },
   computed: {
