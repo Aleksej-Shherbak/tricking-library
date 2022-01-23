@@ -55,13 +55,17 @@ namespace TrickingLibrary.WebApi.Extensions
                 {
                     new IdentityResources.OpenId(),
                     new IdentityResources.Profile(),
+                    new IdentityResource(TrickingLibraryConstants.IdentityResources.RoleScope, new string[]
+                    {
+                        TrickingLibraryConstants.Claims.Role
+                    })
                 });
 
                 identityServerBuilder.AddInMemoryApiScopes(new ApiScope[]
                 {
                     new ApiScope(IdentityServerConstants.LocalApi.ScopeName, new string[]
                     {
-                        ClaimTypes.Role
+                        TrickingLibraryConstants.Claims.Role
                     }),
                 });
                 
@@ -81,6 +85,7 @@ namespace TrickingLibrary.WebApi.Extensions
                             IdentityServerConstants.StandardScopes.OpenId,
                             IdentityServerConstants.StandardScopes.Profile,
                             IdentityServerConstants.LocalApi.ScopeName,
+                            TrickingLibraryConstants.IdentityResources.RoleScope
                         }, 
                         
                         RequirePkce = true,

@@ -37,7 +37,7 @@ export default {
         client_id: "web-client",
         redirect_uri: "http://localhost:3000",
         response_type: "code",
-        scope: "openid profile IdentityServerApi",
+        scope: "openid profile IdentityServerApi role",
         post_logout_redirect_uri: "http://localhost:3000",
         // silent_redirect_uri: "http://localhost:3000/",
         userStore: new WebStorageStateStore({
