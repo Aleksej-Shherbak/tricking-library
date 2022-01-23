@@ -2,6 +2,7 @@
   <div>
     <div>
       <v-btn @click="login">Login</v-btn>
+      <v-btn @click="logout">Logout</v-btn>
       <v-btn @click="api('test')">Api test</v-btn>
       <v-btn @click="api('mod')">Api mod test</v-btn>
     </div>
@@ -37,7 +38,7 @@ export default {
         redirect_uri: "http://localhost:3000",
         response_type: "code",
         scope: "openid profile IdentityServerApi",
-        post_logout_redirect_uri: "http://localhost:3000z ",
+        post_logout_redirect_uri: "http://localhost:3000",
         // silent_redirect_uri: "http://localhost:3000/",
         userStore: new WebStorageStateStore({
           store: window.localStorage
@@ -72,6 +73,9 @@ export default {
     api(x) {
       return this.$axios.$get("/api/tricks/" + x)
       .then(msg => console.log(msg));
+    },
+    logout() {
+      return this.userMgr.signoutRedirect();
     }
   },
   computed: {

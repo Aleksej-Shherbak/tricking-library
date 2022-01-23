@@ -121,7 +121,7 @@ namespace TrickingLibrary.WebApi
                     
                     var mode = new IdentityUser("mod");
                     userManager.CreateAsync(mode, "password").GetAwaiter().GetResult();
-                    userManager.AddClaimAsync(mode, new Claim(ClaimTypes.Role,
+                    userManager.AddClaimAsync(mode, new Claim(TrickingLibraryConstants.Claims.Role,
                         TrickingLibraryConstants.Policies.Mod)).GetAwaiter().GetResult();
                 }
             }

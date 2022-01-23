@@ -41,6 +41,7 @@ namespace TrickingLibrary.WebApi.Extensions
             services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/Login";
+                config.LogoutPath = "/api/auth/logout";
             });
             
             var identityServerBuilder = services.AddIdentityServer();
@@ -104,7 +105,7 @@ namespace TrickingLibrary.WebApi.Extensions
                 {
                     var is4Policy = options.GetPolicy(IdentityServerConstants.LocalApi.PolicyName);
                     policy.Combine(is4Policy);
-                    policy.RequireClaim(ClaimTypes.Role, TrickingLibraryConstants.Roles.Mod);
+                    policy.RequireClaim(TrickingLibraryConstants.Claims.Role, TrickingLibraryConstants.Roles.Mod);
                 });
             });
             
