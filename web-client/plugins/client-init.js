@@ -1,6 +1,7 @@
 ﻿import { UserManager, WebStorageStateStore } from "oidc-client";
 
-export default ({ context }, inject) => {
+export default ({ app, store }, inject) => {
+
   const userManager = new UserManager({
     authority: "https://localhost:5001",
     client_id: "web-client",
@@ -15,5 +16,7 @@ export default ({ context }, inject) => {
   });
 
   inject('auth', userManager)
-
+  app.fetch = () => {
+    return store.dispatch('clientInit')
+  }
 }

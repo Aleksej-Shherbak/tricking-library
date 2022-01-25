@@ -1,8 +1,6 @@
 <template>
   <div>
     <div>
-      <v-btn @click="login">Login</v-btn>
-      <v-btn @click="logout">Logout</v-btn>
       <v-btn @click="api('test')">Api test</v-btn>
       <v-btn @click="api('mod')">Api mod test</v-btn>
     </div>
@@ -26,27 +24,11 @@
 import { mapState } from 'vuex';
 
 export default {
-  created() {
-    if (!process.server){
-      this.$auth.getUser().then(user => {
-        if (user) {
-          console.log("user from storage ", user);
-          this.$axios.setToken(`Bearer ${user.access_token}`)
-        }
-      });
-    }
-  },
   methods: {
-    login() {
-      return this.$auth.signinRedirect();
-    },
     api(x) {
       return this.$axios.$get("/api/tricks/" + x)
       .then(msg => console.log(msg));
     },
-    logout() {
-      return this.$auth.signoutRedirect();
-    }
   },
   computed: {
     ...mapState('tricks', ['tricks', 'categories', 'difficulties']),
