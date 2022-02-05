@@ -21,6 +21,6 @@
     </div>
     <div class="field flex-row">
         <button type="submit">Sign In</button>
-        <a href="">Register</a>
+        <a asp-page="/Account/Register" asp-route-returnUrl="@Model.Form.ReturnUrl">Register</a>
     </div>
 </form>

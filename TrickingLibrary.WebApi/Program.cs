@@ -116,10 +116,10 @@ namespace TrickingLibrary.WebApi
                     ctx.SaveChanges();
                     
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                    var user = new IdentityUser("test");
+                    var user = new IdentityUser("test@test.com");
                     userManager.CreateAsync(user, "password").GetAwaiter().GetResult();
                     
-                    var mode = new IdentityUser("mod");
+                    var mode = new IdentityUser("mod@mod.com");
                     userManager.CreateAsync(mode, "password").GetAwaiter().GetResult();
                     userManager.AddClaimAsync(mode, new Claim(TrickingLibraryConstants.Claims.Role,
                         TrickingLibraryConstants.Policies.Mod)).GetAwaiter().GetResult();
